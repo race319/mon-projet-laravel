@@ -39,22 +39,19 @@ class AbsenceController extends Controller
         'seance' => 'required|integer',
         'statut' => 'required|in:Absent,Present',
         'justifie' => 'boolean',
-        'date_absence' => 'required|date', // ✅ AJOUT : Date obligatoire
+        'date_absence' => 'required|date', 
     ]);
 
-    // ✅ SOLUTION : updateOrCreate pour éviter les doublons
-    // Si l'absence existe déjà pour cet étudiant, cette matière, cette séance et cette date → UPDATE
-    // Sinon → CREATE
+    
     $absence = Absence::updateOrCreate(
         [
-            // 🔑 Clés uniques pour identifier l'absence
+            
             'code_etudiant' => $request->code_etudiant,
             'code_matiere' => $request->code_matiere,
             'seance' => $request->seance,
-            'date_absence' => $request->date_absence, // ✅ Important pour éviter les doublons sur plusieurs jours
+            'date_absence' => $request->date_absence, 
         ],
         [
-            // 📝 Données à mettre à jour ou créer
             'code_enseignant' => $request->code_enseignant,
             'statut' => $request->statut,
             'justifie' => $request->justifie ?? 0,
@@ -65,7 +62,7 @@ class AbsenceController extends Controller
         'success' => true,
         'message' => 'Absence enregistrée avec succès',
         'absence' => $absence
-    ], 200); // ✅ 200 au lieu de 201 car peut être une mise à jour
+    ], 200); 
 }
     
 public function updateAbsence(Request $request, $id)
