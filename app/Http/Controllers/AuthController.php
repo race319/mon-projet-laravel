@@ -8,7 +8,7 @@ use App\Models\User;
 
 class AuthController extends Controller
 {
-    // LOGIN
+    
     public function login(Request $request)
     {
         $request->validate([
@@ -22,7 +22,7 @@ class AuthController extends Controller
             return response()->json(['error' => 'Identifiants invalides'], 401);
         }
 
-        // Générer un token sanctum
+       
         $token = $user->createToken('api_token')->plainTextToken;
 
         return response()->json([
@@ -32,10 +32,10 @@ class AuthController extends Controller
         ]);
     }
 
-    // LOGOUT
+  
     public function logout(Request $request)
     {
-        // Supprimer le token actuel
+        
         $request->user()->currentAccessToken()->delete();
 
         return response()->json(['message' => 'Déconnecté avec succès']);
