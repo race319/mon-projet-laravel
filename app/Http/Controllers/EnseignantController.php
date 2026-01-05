@@ -12,7 +12,7 @@ class EnseignantController extends Controller
 
  public function getGroupes(Request $request, $code_enseignant)
 {
-    // ✅ LOG 1 : Paramètres reçus
+   
     \Log::info("========== DEBUT getGroupes ==========");
     \Log::info("📅 Date reçue : " . ($request->query('date') ?? 'NULL'));
     \Log::info("👤 Code enseignant : " . $code_enseignant);
@@ -26,7 +26,7 @@ class EnseignantController extends Controller
         return response()->json([], 200);
     }
 
-    // ✅ LOG 2 : Requête SQL avant exécution
+    
     \Log::info("🔍 Recherche avec :");
     \Log::info("  - code_enseignant = " . $code_enseignant);
     \Log::info("  - date_seance = " . $date);
@@ -36,7 +36,7 @@ class EnseignantController extends Controller
         ->with('groupe')
         ->get();
 
-    // ✅ LOG 3 : Résultats
+   
     \Log::info("📦 Nombre de groupes trouvés : " . $groupes->count());
     
     if ($groupes->count() > 0) {
@@ -49,7 +49,7 @@ class EnseignantController extends Controller
         $totalEnseignements = Enseignement::where('code_enseignant', $code_enseignant)->count();
         \Log::info("📊 Total enseignements pour cet enseignant : " . $totalEnseignements);
         
-        // Afficher toutes les dates disponibles
+       
         $dates = Enseignement::where('code_enseignant', $code_enseignant)
             ->pluck('date_seance')
             ->unique()
