@@ -9,10 +9,7 @@ use App\Models\Creneau;
 
 class SurveillerController extends Controller
 {
-    /**
-     * Afficher toutes les surveillances
-     * Optionnel : filtrer par enseignant ou par créneau
-     */
+   
     public function index(Request $request)
     {
         $query = Surveiller::with(['enseignant', 'creneau']);
@@ -33,10 +30,7 @@ class SurveillerController extends Controller
         ]);
     }
 
-    /**
-     * Modifier la qualité d'une surveillance
-     * S -> Surveillant, C -> Commission
-     */
+   
     public function updateQualite(Request $request, $id)
     {
         $request->validate([
