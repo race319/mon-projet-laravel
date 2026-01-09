@@ -12,7 +12,7 @@ return new class extends Migration
             $table->id();
             $table->unsignedBigInteger('code_etudiant'); // référence à users.id
             $table->unsignedBigInteger('code_groupe');   // référence à groupes.code_groupe
-            $table->date('date_inscription')->default(DB::raw('CURRENT_DATE'));
+            $table->date('date_inscription');
             $table->timestamps();
 
             $table->foreign('code_etudiant')

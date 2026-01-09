@@ -1,0 +1,79 @@
+{
+    "openapi": "3.0.0",
+    "info": {
+        "title": "API EduApp",
+        "description": "Documentation Swagger de l'API d'authentification",
+        "version": "1.0.0"
+    },
+    "paths": {
+        "/api/auth/loginn": {
+            "post": {
+                "tags": [
+                    "Authentification"
+                ],
+                "summary": "Connexion utilisateur",
+                "operationId": "388c6bc6e7b0e699059f20b21a7a017d",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "email",
+                                    "password"
+                                ],
+                                "properties": {
+                                    "email": {
+                                        "type": "string",
+                                        "example": "test@email.com"
+                                    },
+                                    "password": {
+                                        "type": "string",
+                                        "example": "123456"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Connexion réussie"
+                    },
+                    "401": {
+                        "description": "Identifiants invalides"
+                    }
+                }
+            }
+        },
+        "/api/auth/logout": {
+            "post": {
+                "tags": [
+                    "Authentification"
+                ],
+                "summary": "Déconnexion utilisateur",
+                "operationId": "69281b12abb272c76871f19cb17ca563",
+                "responses": {
+                    "200": {
+                        "description": "Déconnecté avec succès"
+                    },
+                    "401": {
+                        "description": "Non authentifié"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        }
+    },
+    "tags": [
+        {
+            "name": "Authentification",
+            "description": "Endpoints de login et logout"
+        }
+    ]
+}
