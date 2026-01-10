@@ -5,12 +5,33 @@ use Illuminate\Http\Request;
 use App\Models\VoeuxEnseignement;
 use Illuminate\Support\Facades\Auth;
 use Carbon\Carbon;
+use OpenApi\Annotations as OA;
 
-
+/**
+ * @OA\Tag(
+ *     name="Voeux Enseignement",
+ *     description="Gestion des vœux d'enseignement des enseignants"
+ * )
+ */
 
 class VoeuxEnseignementController extends Controller
 {
-    
+    /**
+     * @OA\Get(
+     *     path="/api/voeux",
+     *     tags={"Voeux Enseignement"},
+     *     summary="Lister les vœux de l'enseignant connecté",
+     *     security={{"sanctum":{}}},
+     *     @OA\Response(
+     *         response=200,
+     *         description="Liste des vœux avec charge et heures restantes"
+     *     ),
+     *     @OA\Response(
+     *         response=404,
+     *         description="Profil enseignant introuvable"
+     *     )
+     * )
+     */
     public function index()
     {
         $user = auth()->user();
@@ -35,6 +56,31 @@ class VoeuxEnseignementController extends Controller
             'reste' => max(0, $reste)
         ], 200);
     }
+
+    /**
+     * @OA\Post(
+     *     path="/api/voeux",
+     *     tags={"Voeux Enseignement"},
+     *     summary="Ajouter un vœu d'enseignement",
+     *     security={{"sanctum":{}}},
+     *     @OA\RequestBody(
+     *         required=true,
+     *         @OA\JsonContent(
+     *             required={"code_jour","code_seance"},
+     *             @OA\Property(property="code_jour", type="integer", example=1),
+     *             @OA\Property(property="code_seance", type="integer", example=2)
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=201,
+     *         description="Vœu ajouté avec succès"
+     *     ),
+     *     @OA\Response(
+     *         response=400,
+     *         description="Erreur de validation ou dépassement de charge"
+     *     )
+     * )
+     */
     public function store(Request $request)
 {
     $request->validate([
@@ -113,6 +159,29 @@ class VoeuxEnseignementController extends Controller
         'data' => $voeu
     ], 201);
 }
+/**
+     * @OA\Put(
+     *     path="/api/voeux/update",
+     *     tags={"Voeux Enseignement"},
+     *     summary="Mettre à jour les vœux (remplacement total)",
+     *     security={{"sanctum":{}}},
+     *     @OA\RequestBody(
+     *         required=true,
+     *         @OA\JsonContent(
+     *             @OA\Property(
+     *                 property="voeux",
+     *                 type="array",
+     *                 @OA\Items(
+     *                     @OA\Property(property="code_jour", type="integer", example=1),
+     *                     @OA\Property(property="code_seance", type="integer", example=2)
+     *                 )
+     *             )
+     *         )
+     *     ),
+     *     @OA\Response(response=200, description="Vœux mis à jour"),
+     *     @OA\Response(response=400, description="Charge dépassée")
+     * )
+     */
 
 public function bulkUpdate(Request $request)
     {
@@ -169,6 +238,22 @@ public function bulkUpdate(Request $request)
             'data' => $creneaux
         ], 200);
     }
+    /**
+     * @OA\Delete(
+     *     path="/api/voeux-enseignement/{id}",
+     *     tags={"Voeux Enseignement"},
+     *     summary="Supprimer un vœu",
+     *     security={{"sanctum":{}}},
+     *     @OA\Parameter(
+     *         name="id",
+     *         in="path",
+     *         required=true,
+     *         @OA\Schema(type="integer")
+     *     ),
+     *     @OA\Response(response=200, description="Vœu supprimé"),
+     *     @OA\Response(response=404, description="Vœu introuvable")
+     * )
+     */
     public function destroy(Request $request, $id)
 {
     $user = auth()->user();

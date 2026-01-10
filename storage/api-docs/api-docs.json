@@ -6,29 +6,300 @@
         "version": "1.0.0"
     },
     "paths": {
+        "/api/enseignants": {
+            "get": {
+                "tags": [
+                    "Absences"
+                ],
+                "summary": "Récupérer la liste des enseignants",
+                "description": "Retourne tous les enseignants avec leur id et nom",
+                "operationId": "21a25eed477bd960dc31e699334ec5cf",
+                "responses": {
+                    "200": {
+                        "description": "Liste des enseignants",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "properties": {
+                                            "id": {
+                                                "type": "integer",
+                                                "example": 1
+                                            },
+                                            "name": {
+                                                "type": "string",
+                                                "example": "John Doe"
+                                            }
+                                        },
+                                        "type": "object"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/absences/enseignant/{id}": {
+            "get": {
+                "tags": [
+                    "Absences"
+                ],
+                "summary": "Récupérer les absences d'un enseignant",
+                "description": "Retourne les absences (séances non réalisées) d'un enseignant",
+                "operationId": "55ca39c9a5cb311ec38316031e773780",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID de l'enseignant",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "example": 1
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Liste des absences",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "enseignant_id": {
+                                            "type": "integer",
+                                            "example": 1
+                                        },
+                                        "total_absences": {
+                                            "type": "integer",
+                                            "example": 3
+                                        },
+                                        "dates_absences": {
+                                            "type": "array",
+                                            "items": {
+                                                "properties": {
+                                                    "date_seance": {
+                                                        "type": "string",
+                                                        "example": "2026-01-10"
+                                                    },
+                                                    "heure_seance": {
+                                                        "type": "string",
+                                                        "example": "08:00-10:00"
+                                                    },
+                                                    "nature": {
+                                                        "type": "string",
+                                                        "example": "Cours"
+                                                    }
+                                                },
+                                                "type": "object"
+                                            }
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/absence": {
+            "post": {
+                "tags": [
+                    "Absences"
+                ],
+                "summary": "Marquer une absence",
+                "description": "Créer ou mettre à jour une absence pour un étudiant",
+                "operationId": "a41c3318723201002498cb73c2e00fa7",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "code_etudiant": {
+                                        "type": "integer",
+                                        "example": 10
+                                    },
+                                    "code_matiere": {
+                                        "type": "integer",
+                                        "example": 5
+                                    },
+                                    "code_enseignant": {
+                                        "type": "integer",
+                                        "example": 2
+                                    },
+                                    "seance": {
+                                        "type": "integer",
+                                        "example": 1
+                                    },
+                                    "statut": {
+                                        "type": "string",
+                                        "enum": [
+                                            "Absent",
+                                            "Present"
+                                        ],
+                                        "example": "Absent"
+                                    },
+                                    "justifie": {
+                                        "type": "boolean",
+                                        "example": false
+                                    },
+                                    "date_absence": {
+                                        "type": "string",
+                                        "format": "date",
+                                        "example": "2026-01-10"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Absence enregistrée",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": true
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Absence enregistrée avec succès"
+                                        },
+                                        "absence": {
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation error"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/absences/{id}": {
+            "put": {
+                "tags": [
+                    "Absences"
+                ],
+                "summary": "Mettre à jour une absence",
+                "description": "Modifier le statut ou la justification d'une absence existante",
+                "operationId": "49505538b1618c38db992592ef3477c9",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID de l'absence",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "example": 1
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": false,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "statut": {
+                                        "type": "string",
+                                        "enum": [
+                                            "Absent",
+                                            "Present"
+                                        ],
+                                        "example": "Present"
+                                    },
+                                    "justifie": {
+                                        "type": "boolean",
+                                        "example": true
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Absence mise à jour",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Absence mise à jour avec succès"
+                                        },
+                                        "absence": {
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Absence introuvable"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
         "/api/auth/loginn": {
             "post": {
                 "tags": [
                     "Authentification"
                 ],
                 "summary": "Connexion utilisateur",
+                "description": "Permet de se connecter et de récupérer un token Bearer",
                 "operationId": "388c6bc6e7b0e699059f20b21a7a017d",
                 "requestBody": {
                     "required": true,
                     "content": {
                         "application/json": {
                             "schema": {
-                                "required": [
-                                    "email",
-                                    "password"
-                                ],
                                 "properties": {
                                     "email": {
                                         "type": "string",
-                                        "example": "test@email.com"
+                                        "format": "email",
+                                        "example": "test@test.com"
                                     },
                                     "password": {
                                         "type": "string",
+                                        "format": "password",
                                         "example": "123456"
                                     }
                                 },
@@ -39,7 +310,27 @@
                 },
                 "responses": {
                     "200": {
-                        "description": "Connexion réussie"
+                        "description": "Connexion réussie",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "access_token": {
+                                            "type": "string",
+                                            "example": "token_abc123"
+                                        },
+                                        "token_type": {
+                                            "type": "string",
+                                            "example": "Bearer"
+                                        },
+                                        "user": {
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
                     },
                     "401": {
                         "description": "Identifiants invalides"
@@ -53,10 +344,359 @@
                     "Authentification"
                 ],
                 "summary": "Déconnexion utilisateur",
+                "description": "Supprime le token actuel et déconnecte l'utilisateur",
                 "operationId": "69281b12abb272c76871f19cb17ca563",
                 "responses": {
                     "200": {
-                        "description": "Déconnecté avec succès"
+                        "description": "Déconnexion réussie",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Déconnecté avec succès"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Token invalide ou manquant"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/enseignant/{code_enseignant}/groupes": {
+            "get": {
+                "tags": [
+                    "Enseignants"
+                ],
+                "summary": "Récupérer les groupes d'un enseignant pour une date donnée",
+                "description": "Retourne les groupes d'un enseignant pour la date spécifiée en query param",
+                "operationId": "1271215fc4278c7de019807a15877dd6",
+                "parameters": [
+                    {
+                        "name": "code_enseignant",
+                        "in": "path",
+                        "description": "Code de l'enseignant",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "example": 1
+                        }
+                    },
+                    {
+                        "name": "date",
+                        "in": "query",
+                        "description": "Date des séances à récupérer (format YYYY-MM-DD)",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "format": "date",
+                            "example": "2026-01-10"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Liste des groupes",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "type": "object"
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Aucun groupe trouvé"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/groupe/{code_groupe}/etudiants": {
+            "get": {
+                "tags": [
+                    "Groupes"
+                ],
+                "summary": "Récupérer les étudiants d'un groupe",
+                "description": "Retourne tous les étudiants inscrits dans un groupe donné",
+                "operationId": "34ba320fe7da6a1b58fd0db132fbab7b",
+                "parameters": [
+                    {
+                        "name": "code_groupe",
+                        "in": "path",
+                        "description": "Code du groupe",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "example": "G101"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Liste des étudiants",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "type": "object"
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Aucun étudiant trouvé pour ce groupe"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/groupe/{code_groupe}/matieres": {
+            "get": {
+                "tags": [
+                    "Groupes"
+                ],
+                "summary": "Récupérer les matières d'un groupe",
+                "description": "Retourne toutes les matières associées à un groupe",
+                "operationId": "226fc97c91e82ef6bf577b980fb3ae58",
+                "parameters": [
+                    {
+                        "name": "code_groupe",
+                        "in": "path",
+                        "description": "Code du groupe",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "example": "G101"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Liste des matières",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "type": "object"
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Aucune matière trouvée pour ce groupe"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/seances": {
+            "post": {
+                "tags": [
+                    "Séances"
+                ],
+                "summary": "Filtrer les séances par date et heure",
+                "description": "Retourne les séances d’une date donnée avec une heure optionnelle",
+                "operationId": "6a02fe5c03c1627d1fc9468d1fd1b53e",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "date_seance"
+                                ],
+                                "properties": {
+                                    "date_seance": {
+                                        "type": "string",
+                                        "format": "date",
+                                        "example": "2026-01-15"
+                                    },
+                                    "heure_seance": {
+                                        "type": "string",
+                                        "example": "08:00-10:00"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Liste des séances",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": true
+                                        },
+                                        "selected_date": {
+                                            "type": "string",
+                                            "example": "2026-01-15"
+                                        },
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "type": "object"
+                                            }
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Données invalides"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/seances/{id}/etat": {
+            "put": {
+                "tags": [
+                    "Séances"
+                ],
+                "summary": "Modifier l’état d’une séance",
+                "description": "Met à jour l’état d’une séance (0 = non faite, 1 = faite)",
+                "operationId": "7e59347d542d3444caf506bf183cf8b9",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID de la séance",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "etat"
+                                ],
+                                "properties": {
+                                    "etat": {
+                                        "type": "integer",
+                                        "enum": [
+                                            0,
+                                            1
+                                        ],
+                                        "example": 1
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Etat modifié avec succès"
+                    },
+                    "404": {
+                        "description": "Séance introuvable"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/surveiller": {
+            "get": {
+                "tags": [
+                    "Surveillances"
+                ],
+                "summary": "Lister les surveillances",
+                "description": "Retourne la liste des surveillances avec filtres optionnels",
+                "operationId": "b4d3575c1736acbe06ad99024c7a9da9",
+                "parameters": [
+                    {
+                        "name": "enseignant_id",
+                        "in": "query",
+                        "description": "ID de l’enseignant",
+                        "required": false,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "creneau_id",
+                        "in": "query",
+                        "description": "ID du créneau",
+                        "required": false,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Liste des surveillances",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": true
+                                        },
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "type": "object"
+                                            }
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
                     },
                     "401": {
                         "description": "Non authentifié"
@@ -68,12 +708,371 @@
                     }
                 ]
             }
+        },
+        "/api/voeux": {
+            "get": {
+                "tags": [
+                    "Voeux Enseignement"
+                ],
+                "summary": "Lister les vœux de l'enseignant connecté",
+                "operationId": "6263b1b7fcf848a796abef0739976373",
+                "responses": {
+                    "200": {
+                        "description": "Liste des vœux avec charge et heures restantes"
+                    },
+                    "404": {
+                        "description": "Profil enseignant introuvable"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            },
+            "post": {
+                "tags": [
+                    "Voeux Enseignement"
+                ],
+                "summary": "Ajouter un vœu d'enseignement",
+                "operationId": "8406c0c4ae9ad883854ae9c68c3cbb8f",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "code_jour",
+                                    "code_seance"
+                                ],
+                                "properties": {
+                                    "code_jour": {
+                                        "type": "integer",
+                                        "example": 1
+                                    },
+                                    "code_seance": {
+                                        "type": "integer",
+                                        "example": 2
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Vœu ajouté avec succès"
+                    },
+                    "400": {
+                        "description": "Erreur de validation ou dépassement de charge"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        },
+        "/api/voeux/update": {
+            "put": {
+                "tags": [
+                    "Voeux Enseignement"
+                ],
+                "summary": "Mettre à jour les vœux (remplacement total)",
+                "operationId": "c39331d15315d78aa3beb754c9a12851",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "voeux": {
+                                        "type": "array",
+                                        "items": {
+                                            "properties": {
+                                                "code_jour": {
+                                                    "type": "integer",
+                                                    "example": 1
+                                                },
+                                                "code_seance": {
+                                                    "type": "integer",
+                                                    "example": 2
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Vœux mis à jour"
+                    },
+                    "400": {
+                        "description": "Charge dépassée"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        },
+        "/api/voeux-enseignement/{id}": {
+            "delete": {
+                "tags": [
+                    "Voeux Enseignement"
+                ],
+                "summary": "Supprimer un vœu",
+                "operationId": "7800bc716e464bf5a8672e8fddab3b6c",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Vœu supprimé"
+                    },
+                    "404": {
+                        "description": "Vœu introuvable"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        },
+        "/api/voeuxexa": {
+            "get": {
+                "tags": [
+                    "Voeux Examen"
+                ],
+                "summary": "Lister les vœux d'examen de l'enseignant connecté",
+                "operationId": "f4d31d5848aa138533b2c2807e797112",
+                "responses": {
+                    "200": {
+                        "description": "Liste des vœux d'examen"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        },
+        "/api/voeux-examen": {
+            "post": {
+                "tags": [
+                    "Voeux Examen"
+                ],
+                "summary": "Ajouter un vœu de surveillance",
+                "operationId": "990b6c56a4fe52ddd6677c7923a17774",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "code_creneau"
+                                ],
+                                "properties": {
+                                    "code_creneau": {
+                                        "type": "integer",
+                                        "example": 4
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Vœu ajouté"
+                    },
+                    "400": {
+                        "description": "Charge dépassée ou vœu existant"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        },
+        "/api/voeuxexa/{code_creneau}": {
+            "delete": {
+                "tags": [
+                    "Voeux Examen"
+                ],
+                "summary": "Supprimer un vœu de surveillance",
+                "operationId": "34dd146053bfbc6e100e041cb15b43f4",
+                "parameters": [
+                    {
+                        "name": "code_creneau",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Vœu supprimé"
+                    },
+                    "404": {
+                        "description": "Vœu introuvable"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        },
+        "/api/voeux-examen/bulk": {
+            "post": {
+                "tags": [
+                    "Voeux Examen"
+                ],
+                "summary": "Remplacer tous les vœux de surveillance",
+                "operationId": "8d00c13668f4877f7f6df96ccd91c62b",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "voeux": {
+                                        "type": "array",
+                                        "items": {
+                                            "properties": {
+                                                "code_creneau": {
+                                                    "type": "integer",
+                                                    "example": 2
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Vœux mis à jour"
+                    },
+                    "400": {
+                        "description": "Charge dépassée"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        },
+        "/api/enseignant/charge-surveillance": {
+            "get": {
+                "tags": [
+                    "Voeux Examen"
+                ],
+                "summary": "Récupérer la charge de surveillance",
+                "operationId": "19d39a577d45b33590b3380e7ca0a8be",
+                "responses": {
+                    "200": {
+                        "description": "Charge retournée"
+                    },
+                    "404": {
+                        "description": "Enseignant non trouvé"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        },
+        "/api/creneaux": {
+            "get": {
+                "tags": [
+                    "Créneaux"
+                ],
+                "summary": "Lister les créneaux d'examen",
+                "operationId": "e524890e3cd1b0cfe50db8f77aefc29b",
+                "responses": {
+                    "200": {
+                        "description": "Liste des créneaux"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
         }
     },
     "tags": [
         {
+            "name": "Absences",
+            "description": "Gestion des absences des étudiants et enseignants"
+        },
+        {
             "name": "Authentification",
             "description": "Endpoints de login et logout"
+        },
+        {
+            "name": "Enseignants",
+            "description": "Endpoints pour récupérer les groupes  des enseignants"
+        },
+        {
+            "name": "Groupes",
+            "description": "Gestion des groupes, récupération des étudiants et matières"
+        },
+        {
+            "name": "Séances",
+            "description": "Gestion des séances"
+        },
+        {
+            "name": "Surveillances",
+            "description": "Gestion des surveillances d'examen"
+        },
+        {
+            "name": "Voeux Enseignement",
+            "description": "Gestion des vœux d'enseignement des enseignants"
+        },
+        {
+            "name": "Voeux Examen",
+            "description": "Gestion des vœux de surveillance des examens"
+        },
+        {
+            "name": "Créneaux",
+            "description": "Créneaux"
         }
     ]
 }

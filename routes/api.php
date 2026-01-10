@@ -31,7 +31,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::delete('voeuxexa/{code_creneau}', [VoeuxExamenController::class, 'destroy']);
     Route::get('/enseignant/charge-surveillance', [VoeuxExamenController::class, 'getChargeSurveillance']);
     Route::post('/voeuxexa', [VoeuxExamenController::class, 'store']);
-    Route::delete('/voeuxexam/{id}', [VoeuxExamenController::class, 'destroy']);
+   
     Route::post('/voeux-examen/bulk', [VoeuxExamenController::class, 'bulkUpdate']);
     Route::get('creneaux', [VoeuxExamenController::class, 'indexx']);
     Route::post('/seances', [SeanceController::class, 'filter']);

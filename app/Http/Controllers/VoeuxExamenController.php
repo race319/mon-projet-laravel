@@ -8,12 +8,33 @@ use App\Models\Creneau;
 use Illuminate\Support\Facades\Log;
 use App\Models\Enseignant;
 use Illuminate\Support\Facades\Auth;
+use OpenApi\Annotations as OA;
+
+/**
+ * @OA\Tag(
+ *     name="Voeux Examen",
+ *     description="Gestion des vœux de surveillance des examens"
+ * )
+ */
 
 
 
 
 class VoeuxExamenController extends Controller
 {
+
+    /**
+ * @OA\Get(
+ *     path="/api/voeuxexa",
+ *     tags={"Voeux Examen"},
+ *     summary="Lister les vœux d'examen de l'enseignant connecté",
+ *     security={{"sanctum":{}}},
+ *     @OA\Response(
+ *         response=200,
+ *         description="Liste des vœux d'examen"
+ *     )
+ * )
+ */
     public function index()
     {
         $user = Auth::user();
@@ -26,6 +47,24 @@ class VoeuxExamenController extends Controller
             'data' => $voeux
         ]);
     }
+
+    /**
+ * @OA\Post(
+ *     path="/api/voeux-examen",
+ *     tags={"Voeux Examen"},
+ *     summary="Ajouter un vœu de surveillance",
+ *     security={{"sanctum":{}}},
+ *     @OA\RequestBody(
+ *         required=true,
+ *         @OA\JsonContent(
+ *             required={"code_creneau"},
+ *             @OA\Property(property="code_creneau", type="integer", example=4)
+ *         )
+ *     ),
+ *     @OA\Response(response=201, description="Vœu ajouté"),
+ *     @OA\Response(response=400, description="Charge dépassée ou vœu existant")
+ * )
+ */
     public function store(Request $request)
     {
         $request->validate([
@@ -102,6 +141,24 @@ class VoeuxExamenController extends Controller
             'data' => $voeu
         ], 201);
     }
+
+    /**
+ * @OA\Delete(
+ *     path="/api/voeuxexa/{code_creneau}",
+ *     tags={"Voeux Examen"},
+ *     summary="Supprimer un vœu de surveillance",
+ *     security={{"sanctum":{}}},
+ *     @OA\Parameter(
+ *         name="code_creneau",
+ *         in="path",
+ *         required=true,
+ *         @OA\Schema(type="integer")
+ *     ),
+ *     @OA\Response(response=200, description="Vœu supprimé"),
+ *     @OA\Response(response=404, description="Vœu introuvable")
+ * )
+ */
+
     public function destroy($code_creneau)
     {
         $user = Auth::user();
@@ -126,11 +183,32 @@ class VoeuxExamenController extends Controller
     }
     
 
-   
+   /**
+ * @OA\Post(
+ *     path="/api/voeux-examen/bulk",
+ *     tags={"Voeux Examen"},
+ *     summary="Remplacer tous les vœux de surveillance",
+ *     security={{"sanctum":{}}},
+ *     @OA\RequestBody(
+ *         required=true,
+ *         @OA\JsonContent(
+ *             @OA\Property(
+ *                 property="voeux",
+ *                 type="array",
+ *                 @OA\Items(
+ *                     @OA\Property(property="code_creneau", type="integer", example=2)
+ *                 )
+ *             )
+ *         )
+ *     ),
+ *     @OA\Response(response=200, description="Vœux mis à jour"),
+ *     @OA\Response(response=400, description="Charge dépassée")
+ * )
+ */
 
    
 
-    // 🔹 Mise à jour en bulk (modifier tous les vœux)
+
     public function bulkUpdate(Request $request)
     {
         $request->validate([
@@ -171,6 +249,20 @@ class VoeuxExamenController extends Controller
             'data' => $voeuxCrees
         ], 200);
     }
+
+
+    /**
+ * @OA\Get(
+ *     path="/api/enseignant/charge-surveillance",
+ *     tags={"Voeux Examen"},
+ *     summary="Récupérer la charge de surveillance",
+ *     security={{"sanctum":{}}},
+ *     @OA\Response(response=200, description="Charge retournée"),
+ *     @OA\Response(response=404, description="Enseignant non trouvé")
+ * )
+ */
+
+
     public function getChargeSurveillance(Request $request)
     {
         $user = $request->user();
@@ -188,7 +280,15 @@ class VoeuxExamenController extends Controller
         ], 200);
     }
 
-   
+   /**
+ * @OA\Get(
+ *     path="/api/creneaux",
+ *     tags={"Créneaux"},
+ *     summary="Lister les créneaux d'examen",
+ *     security={{"sanctum":{}}},
+ *     @OA\Response(response=200, description="Liste des créneaux")
+ * )
+ */
 
 
     public function indexx()

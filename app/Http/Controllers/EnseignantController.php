@@ -6,9 +6,55 @@ use App\Models\User;
 use App\Models\Enseignement;
 use Illuminate\Http\Request;
 use Carbon\Carbon;
+use OpenApi\Annotations as OA;
+
+
+
+/**
+ * @OA\Tag(
+ *     name="Enseignants",
+ *     description="Endpoints pour récupérer les groupes  des enseignants"
+ * )
+ */
 
 class EnseignantController extends Controller
 {
+    
+
+    /**
+     * @OA\Get(
+     *     path="/api/enseignant/{code_enseignant}/groupes",
+     *     tags={"Enseignants"},
+     *     summary="Récupérer les groupes d'un enseignant pour une date donnée",
+     *     description="Retourne les groupes d'un enseignant pour la date spécifiée en query param",
+     *     security={{"bearerAuth":{}}},
+     * 
+     *     @OA\Parameter(
+     *         name="code_enseignant",
+     *         in="path",
+     *         required=true,
+     *         description="Code de l'enseignant",
+     *         @OA\Schema(type="integer", example=1)
+     *     ),
+     *     @OA\Parameter(
+     *         name="date",
+     *         in="query",
+     *         required=true,
+     *         description="Date des séances à récupérer (format YYYY-MM-DD)",
+     *         @OA\Schema(type="string", format="date", example="2026-01-10")
+     *     ),
+     * 
+     *     @OA\Response(
+     *         response=200,
+     *         description="Liste des groupes",
+     *         @OA\JsonContent(type="array", @OA\Items(type="object"))
+     *     ),
+     *     @OA\Response(
+     *         response=404,
+     *         description="Aucun groupe trouvé"
+     *     )
+     * )
+     */
 
  public function getGroupes(Request $request, $code_enseignant)
 {
