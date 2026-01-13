@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Carbon\Carbon;
 
 class Seance extends Model
 {
@@ -21,6 +22,8 @@ class Seance extends Model
         'code_enseignant',
         'code_groupe',
         'etat',
+        'code_suveillance',
+        'locked_at',
     ];
 
     public function salle()
@@ -41,5 +44,19 @@ class Seance extends Model
     public function isAbsent()
     {
         return $this->etat == 0;
+    }
+
+    public function surveillant() 
+    { 
+        return $this->belongsTo(User::class, 'code_suveillance', 'id'); 
+    }
+    public function isLocked()
+    {
+        if (!$this->locked_at) return false;
+
+        $limit = Carbon::parse($this->locked_at)
+            ->addSeconds(config('seances.absence_modification_seconds'));
+
+        return now()->greaterThan($limit);
     }
 }

@@ -46,6 +46,15 @@ Route::put('/absences/{id}', [AbsenceController::class, 'updateAbsence']);
 Route::get('/enseignant/charge', [EnseignantController::class, 'getCharge']);
 Route::get('/voeux-enseignement', [VoeuxEnseignementController::class, 'index']);
 Route::delete('/voeux-enseignement/{id}', [VoeuxEnseignementController::class, 'destroy']);
+Route::get('/seances/config', function() {
+    return response()->json([
+        'absence_modification_seconds' => config('seances.absence_modification_seconds')
+    ]);
+});
+
+Route::get('/absences/etudiant/{code_etudiant}/matiere/{code_matiere}', [AbsenceController::class, 'nombreAbsencesEtudiant']);
+Route::post('/absences/elimination',[AbsenceController::class, 'changerElimination']);
+Route::post('/register', [AuthController::class, 'register']);
 
 
 

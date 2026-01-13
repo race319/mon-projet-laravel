@@ -6,6 +6,7 @@ use App\Models\User;
 use App\Models\Seance;
 use Illuminate\Http\Request;
 use App\Models\Absence;
+use App\Models\Matiere;
 use App\Models\Enseignement;
 use OpenApi\Annotations as OA;
 
@@ -237,6 +238,81 @@ public function updateAbsence(Request $request, $id)
         'absence' => $absence
     ], 200);
 }
+public function nombreAbsencesEtudiant($codeEtudiant, $codeMatiere)
+{
+    $nombreAbsences = Absence::nombreAbsences($codeEtudiant, $codeMatiere);
+    $estElimine = Absence::estElimine($codeEtudiant, $codeMatiere);
+
+    $etudiant = User::find($codeEtudiant);
+    $matiere = Matiere::find($codeMatiere);
+
+    return response()->json([
+        'success' => true,
+        'etudiant' => [
+            'code' => $codeEtudiant,
+            'nom' => $etudiant->name ?? 'N/A',
+        ],
+        'matiere' => [
+            'code' => $codeMatiere,
+            'nom' => $matiere->nom_matiere ?? 'N/A',
+        ],
+        'nombre_absences' => $nombreAbsences,
+        'est_elimine' => $estElimine,
+        'statut_elimination' => $estElimine ? 'Éliminé' : 'Non éliminé'
+    ], 200);
+}
+
+
+public function changerElimination(Request $request)
+{
+    \Log::info('Données reçues:', $request->all());
+
+    $request->validate([
+        'code_etudiant' => 'required',
+        'code_matiere' => 'required',
+        'elimination' => 'required|in:0,1', 
+    ]);
+
+    Absence::changerElimination(
+        $request->code_etudiant, 
+        $request->code_matiere,
+        $request->elimination
+    );
+
+    $message = $request->elimination == 1 
+        ? 'Étudiant marqué comme éliminé' 
+        : 'Élimination annulée';
+
+    return response()->json([
+        'success' => true,
+        'message' => $message
+    ]);
+}
+
+public function register(Request $request)
+    {
+        $request->validate([
+            'name'     => 'required|string|max:255',
+            'email'    => 'required|email|unique:users,email',
+            'password' => 'required|min:6',
+            'role'     => 'required|in:admin,enseignant,etudiant',
+        ]);
+
+        $user = User::create([
+            'name'     => $request->name,
+            'email'    => $request->email,
+            'password' => Hash::make($request->password),
+            'role'     => $request->role,
+        ]);
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Utilisateur créé avec succès',
+            'user'    => $user,
+        ], 201);
+    }
+
+
 
 
 }

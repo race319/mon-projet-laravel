@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Seance;
 use Illuminate\Http\Request;
 use OpenApi\Annotations as OA;
+use Carbon\Carbon;
 
 
 
@@ -73,7 +74,8 @@ class SeanceController extends Controller
         ]);
 
         $query = Seance::with(['enseignant', 'salle', 'groupe'])
-            ->where('date_seance', $request->date_seance);
+            ->where('date_seance', $request->date_seance)
+            ->where('code_suveillance', auth()->id());
 
         if ($request->filled('heure_seance')) {
             $query->where('heure_seance', $request->heure_seance);
@@ -128,21 +130,39 @@ class SeanceController extends Controller
      * )
      */
 
+  public function updateEtat(Request $request, $id)
+{
+    
+    $request->validate([
+        'etat' => 'required|in:0,1' 
+    ]);
+
+    $seance = Seance::findOrFail($id);
+
    
-    public function updateEtat(Request $request, $id)
-    {
-        $request->validate([
-            'etat' => 'required|in:0,1' 
-        ]);
+    $duration = config('seances.absence_modification_seconds'); // durée en secondes
+    if ($seance->locked_at) {
+        $limit = Carbon::parse($seance->locked_at)->addSeconds($duration);
 
-        $seance = Seance::findOrFail($id);
-        $seance->etat = $request->etat;
-        $seance->save();
-
-        return response()->json([
-            'success' => true,
-            'message' => 'Etat modifié avec succès',
-            'data' => $seance
-        ], 200);
+        if (now()->greaterThan($limit)) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Modification impossible : délai dépassé'
+            ], 403);
+        }
+    } else {
+       
+        $seance->locked_at = now();
     }
+
+    $seance->etat = $request->etat;
+    $seance->code_suveillance = auth()->id();
+    $seance->save();
+
+    return response()->json([
+        'success' => true,
+        'message' => 'Etat modifié avec succès',
+        'data' => $seance->load('surveillant') 
+    ], 200);
+}
 }
