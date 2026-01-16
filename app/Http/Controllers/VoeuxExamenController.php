@@ -83,7 +83,7 @@ class VoeuxExamenController extends Controller
         $heuresParCreneau = 2; // Chaque créneau = 2 heures
         $chargeTotale = $enseignant->charge_surveillance;
 
-        // Calculer les heures déjà sélectionnées
+        
         $heuresSelectionnees = VoeuxExamen::where('code_enseignant', $user->id)
             ->count() * $heuresParCreneau;
 

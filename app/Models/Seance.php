@@ -21,6 +21,7 @@ class Seance extends Model
         'nb_seances',
         'code_enseignant',
         'code_groupe',
+        'code_matiere',
         'etat',
         'code_suveillance',
         'locked_at',
@@ -30,6 +31,12 @@ class Seance extends Model
     {
         return $this->belongsTo(Salle::class, 'code_salle', 'code_salle');
     }
+    
+    public function matiere()
+{
+    return $this->belongsTo(Matiere::class, 'code_matiere', 'code_matiere');
+}
+
 
     public function enseignant()
     {

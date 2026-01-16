@@ -22,4 +22,9 @@ class Matiere extends Model {
     public function absences() {
         return $this->hasMany(Absence::class, 'code_matiere');
     }
+    public function seances()
+{
+    return $this->hasMany(Seance::class, 'code_matiere', 'code_matiere');
+}
+
 }

@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 class Enseignant extends Model
 {
     use HasFactory;
+    public $incrementing = false;
 
     protected $fillable = [
         'user_id',

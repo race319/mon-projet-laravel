@@ -67,28 +67,34 @@ class SeanceController extends Controller
      */
     
     public function filter(Request $request)
-    {
-        $request->validate([
-            'date_seance' => 'required|date',
-            'heure_seance' => 'nullable|string' 
-        ]);
+{
+    $request->validate([
+        'date_seance' => 'required|date',
+        'heure_seance' => 'nullable|string'
+    ]);
 
-        $query = Seance::with(['enseignant', 'salle', 'groupe'])
-            ->where('date_seance', $request->date_seance)
-            ->where('code_suveillance', auth()->id());
+    $query = Seance::with([
+            'enseignant',
+            'salle',
+            'groupe',
+            'matiere'   // 👈 AJOUT ICI
+        ])
+        ->where('date_seance', $request->date_seance)
+        ->where('code_suveillance', auth()->id());
 
-        if ($request->filled('heure_seance')) {
-            $query->where('heure_seance', $request->heure_seance);
-        }
-
-        $seances = $query->get();
-
-        return response()->json([
-            'success' => true,
-            'selected_date' => $request->date_seance, // afficher la date sélectionnée en premier
-            'data' => $seances
-        ], 200);
+    if ($request->filled('heure_seance')) {
+        $query->where('heure_seance', $request->heure_seance);
     }
+
+    $seances = $query->get();
+
+    return response()->json([
+        'success' => true,
+        'selected_date' => $request->date_seance,
+        'data' => $seances
+    ], 200);
+}
+
     /**
      * @OA\Put(
      *     path="/api/seances/{id}/etat",

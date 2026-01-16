@@ -14,7 +14,6 @@ return new class extends Migration
    public function up(): void
     {
         Schema::create('enseignants', function (Blueprint $table) {
-            $table->id();
             $table->unsignedBigInteger('user_id')->unique(); // lien avec la table users
             $table->integer('charge_enseignement')->default(0); // heures d'enseignement
             $table->integer('charge_surveillance')->default(0); // heures de surveillance
