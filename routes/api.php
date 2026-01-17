@@ -21,6 +21,7 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 Route::prefix('auth')->group(function () {
     Route::post('/loginn', [AuthController::class, 'login']); 
     Route::post('/logout', [AuthController::class, 'logout'])->middleware('auth:sanctum');
+    Route::post('/register', [AuthController::class, 'register']);
 });
 
 Route::middleware('auth:sanctum')->group(function () {
@@ -54,7 +55,7 @@ Route::get('/seances/config', function() {
 
 Route::get('/absences/etudiant/{code_etudiant}/matiere/{code_matiere}', [AbsenceController::class, 'nombreAbsencesEtudiant']);
 Route::post('/absences/elimination',[AbsenceController::class, 'changerElimination']);
-Route::post('/register', [AuthController::class, 'register']);
+
 
 
 
