@@ -42,6 +42,91 @@
                 Gérer
             </a>
         </div>
+        <div class="admin-card">
+    <h3>Absences</h3>
+    <p>Gestion des absences des étudiants</p>
+    <a href="{{ route('absences.csv.page') }}" class="admin-btn btn-blue">
+        Gérer
+    </a>
+</div>
+
+<div class="admin-card">
+    <h3>Enseignants</h3>
+    <p>Gestion des charges des enseignants</p>
+    <a href="{{ route('enseignants.csv.page') }}" class="admin-btn btn-blue">
+        Gérer
+    </a>
+</div>
+
+<div class="admin-card">
+    <h3>Enseignements</h3>
+    <p>Gestion des enseignements des enseignants</p>
+    <a href="{{ route('enseignements.csv.page') }}" class="admin-btn btn-blue">
+        Gérer
+    </a>
+</div>
+<div class="admin-card">
+    <h3>Groupes</h3>
+    <p>Gestion des groupes d’étudiants</p>
+    <a href="{{ route('groupes.csv.page') }}" class="admin-btn btn-blue">
+        Gérer
+    </a>
+</div>
+
+<div class="admin-card">
+    <h3>Inscriptions</h3>
+    <p>Gestion des inscriptions des étudiants</p>
+    <a href="{{ route('inscriptions.csv.page') }}" class="admin-btn btn-blue">
+        Gérer
+    </a>
+</div>
+
+
+
+<div class="admin-card">
+    <h3>Horaires</h3>
+    <p>Gestion des horaires des séances</p>
+    <a href="{{ route('horaires.csv.page') }}" class="admin-btn btn-blue">
+        Gérer
+    </a>
+</div>
+
+
+<div class="admin-card">
+    <h3>Matières</h3>
+    <p>Gestion des matières </p>
+    <a href="{{ route('matieres.csv.page') }}" class="admin-btn btn-blue">
+        Gérer
+    </a>
+</div>
+
+<div class="admin-card">
+    <h3>Salles</h3>
+    <p>Gestion des salles</p>
+    <a href="{{ route('salles.csv.page') }}" class="admin-btn btn-blue">
+        Gérer
+    </a>
+</div>
+
+<div class="admin-card">
+    <h3>Créneaux</h3>
+    <p>Gestion des créneaux des séances</p>
+    <a href="{{ route('creneaux.csv.page') }}" class="admin-btn btn-blue">
+        Gérer
+    </a>
+</div>
+
+
+
+
+
+
+
+
+
+
+        
+
 
     </div>
 
