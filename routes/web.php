@@ -19,10 +19,10 @@ use Illuminate\Support\Facades\Auth;
 
 Route::get('/', function () {
     if (Auth::check()) {
-        // Si l'utilisateur est connecté, aller au dashboard
+        
         return redirect()->route('admin.dashboard');
     }
-    // Sinon, rediriger vers login
+    
     return redirect()->route('login');
 });
 
