@@ -1,5 +1,5 @@
 <?php
 
 return [
-    'absence_modification_seconds' => 5, 
+    'absence_modification_seconds' => 1500, 
 ];
