@@ -70,20 +70,20 @@ class SeanceController extends Controller
 {
     $request->validate([
         'date_seance' => 'required|date',
-        'heure_seance' => 'nullable|string'
+        'numero_seance' => 'nullable|string'  // ✅ Changé de heure_seance à numero_seance
     ]);
 
     $query = Seance::with([
             'enseignant',
             'salle',
             'groupe',
-            'matiere'   // 👈 AJOUT ICI
+            'matiere'
         ])
         ->where('date_seance', $request->date_seance)
         ->where('code_suveillance', auth()->id());
 
-    if ($request->filled('heure_seance')) {
-        $query->where('heure_seance', $request->heure_seance);
+    if ($request->filled('numero_seance')) {  // ✅ Changé de heure_seance à numero_seance
+        $query->where('numero_seance', $request->numero_seance);
     }
 
     $seances = $query->get();
@@ -138,15 +138,14 @@ class SeanceController extends Controller
 
   public function updateEtat(Request $request, $id)
 {
-    
+   
     $request->validate([
-        'etat' => 'required|in:0,1' 
+        'code_effectue' => 'required|in:A,P'
     ]);
 
     $seance = Seance::findOrFail($id);
 
-   
-    $duration = config('seances.absence_modification_seconds'); // durée en secondes
+    $duration = config('seances.absence_modification_seconds'); 
     if ($seance->locked_at) {
         $limit = Carbon::parse($seance->locked_at)->addSeconds($duration);
 
@@ -157,18 +156,22 @@ class SeanceController extends Controller
             ], 403);
         }
     } else {
-       
         $seance->locked_at = now();
     }
 
-    $seance->etat = $request->etat;
-    $seance->code_suveillance = auth()->id();
+    
+    $seance->code_effectue = $request->code_effectue;
+
+    // Mettre à jour le surveillant qui a fait la modification
+    $seance->code_surveillance = auth()->id();
+
     $seance->save();
 
     return response()->json([
         'success' => true,
         'message' => 'Etat modifié avec succès',
-        'data' => $seance->load('surveillant') 
+        'data' => $seance->load('surveillant')
     ], 200);
 }
+
 }

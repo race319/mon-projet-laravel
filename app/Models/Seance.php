@@ -9,50 +9,24 @@ use Carbon\Carbon;
 class Seance extends Model
 {
     use HasFactory;
-    
+      public $timestamps = true;
     protected $table = 'seances';
 
     protected $fillable = [
         'date_seance',
-        'heure_seance',
+        'code_jour',
         'numero_seance',
         'code_salle',
-        'nature',
-        'nb_seances',
+        'code_typeseance',
         'code_enseignant',
         'code_groupe',
         'code_matiere',
-        'etat',
-        'code_suveillance',
+        'code_effectue',
+        'code_surveillance',
         'locked_at',
     ];
 
-    public function salle()
-    {
-        return $this->belongsTo(Salle::class, 'code_salle', 'code_salle');
-    }
     
-    public function matiere()
-{
-    return $this->belongsTo(Matiere::class, 'code_matiere', 'code_matiere');
-}
-
-
-    public function enseignant()
-    {
-        return $this->belongsTo(User::class, 'code_enseignant', 'id'); 
-    }
-
-    public function groupe()
-    {
-        return $this->belongsTo(Groupe::class, 'code_groupe', 'code_groupe');
-    }
-
-    public function isAbsent()
-    {
-        return $this->etat == 0;
-    }
-
     public function surveillant() 
     { 
         return $this->belongsTo(User::class, 'code_suveillance', 'id'); 
