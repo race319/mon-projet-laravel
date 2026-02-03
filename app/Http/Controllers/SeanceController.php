@@ -80,7 +80,7 @@ class SeanceController extends Controller
             'matiere'
         ])
         ->where('date_seance', $request->date_seance)
-        ->where('code_suveillance', auth()->id());
+        ->where('code_surveillance', auth()->id());
 
     if ($request->filled('numero_seance')) {  // ✅ Changé de heure_seance à numero_seance
         $query->where('numero_seance', $request->numero_seance);
