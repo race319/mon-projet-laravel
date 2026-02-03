@@ -69,31 +69,25 @@ class SeanceController extends Controller
     public function filter(Request $request)
 {
     $request->validate([
-        'date_seance' => 'required|date',
-        'numero_seance' => 'nullable|string'  // ✅ Changé de heure_seance à numero_seance
+        'date_seance'   => 'required|string',
+        'numero_seance' => 'nullable|string',
     ]);
 
-    $query = Seance::with([
-            'enseignant',
-            'salle',
-            'groupe',
-            'matiere'
-        ])
-        ->where('date_seance', $request->date_seance)
+    $query = Seance::query()
+        ->whereRaw('TRIM(date_seance) = ?', [$request->date_seance])
         ->where('code_surveillance', auth()->id());
 
-    if ($request->filled('numero_seance')) {  // ✅ Changé de heure_seance à numero_seance
+    if ($request->filled('numero_seance')) {
         $query->where('numero_seance', $request->numero_seance);
     }
 
-    $seances = $query->get();
-
     return response()->json([
         'success' => true,
-        'selected_date' => $request->date_seance,
-        'data' => $seances
+        'data' => $query->get(),
     ], 200);
 }
+
+
 
     /**
      * @OA\Put(
@@ -136,42 +130,41 @@ class SeanceController extends Controller
      * )
      */
 
-  public function updateEtat(Request $request, $id)
+    public function updateEtat(Request $request, $id)
 {
-   
     $request->validate([
         'code_effectue' => 'required|in:A,P'
     ]);
 
     $seance = Seance::findOrFail($id);
 
-    $duration = config('seances.absence_modification_seconds'); 
-    if ($seance->locked_at) {
-        $limit = Carbon::parse($seance->locked_at)->addSeconds($duration);
+    // ✅ BON fichier de config
+    $duration = config('seances.absence_modification_seconds');
 
-        if (now()->greaterThan($limit)) {
+    if ($seance->locked_at) {
+        $secondsPassed = now()->diffInSeconds(
+            Carbon::parse($seance->locked_at)
+        );
+
+        if ($secondsPassed >= $duration) {
             return response()->json([
                 'success' => false,
                 'message' => 'Modification impossible : délai dépassé'
             ], 403);
         }
     } else {
+        // 🔒 première modification → verrou
         $seance->locked_at = now();
     }
 
-    
     $seance->code_effectue = $request->code_effectue;
-
-    // Mettre à jour le surveillant qui a fait la modification
     $seance->code_surveillance = auth()->id();
-
     $seance->save();
 
     return response()->json([
         'success' => true,
-        'message' => 'Etat modifié avec succès',
-        'data' => $seance->load('surveillant')
+        'message' => 'État modifié avec succès',
+        'data' => $seance
     ], 200);
 }
-
 }
