@@ -42,7 +42,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('/enseignant/{code_enseignant}/groupes', [EnseignantController::class, 'getGroupes']);
     Route::get('/groupe/{code_groupe}/etudiants', [GroupeController::class, 'getEtudiants']);
     Route::get('/groupe/{code_groupe}/matieres', [GroupeController::class, 'getMatieres']);
-    Route::post('/absence', [AbsenceController::class, 'marquerAbsence']); // POST pour créer
+    Route::post('/absence', [AbsenceController::class, 'marquerAbsence']); 
 Route::put('/absences/{id}', [AbsenceController::class, 'updateAbsence']);
 Route::get('/enseignant/charge', [EnseignantController::class, 'getCharge']);
 Route::get('/voeux-enseignement', [VoeuxEnseignementController::class, 'index']);
@@ -53,7 +53,7 @@ Route::get('/seances/config', function() {
     ]);
 });
 
-Route::get('/absences/etudiant/{code_etudiant}/matiere/{code_matiere}', [AbsenceController::class, 'nombreAbsencesEtudiant']);
+Route::get('/absences/etudiant/{code_etudiant}/matiere/{code_matiere}/groupe/{code_groupe}', [AbsenceController::class, 'nombreAbsencesEtudiant']);
 Route::post('/absences/elimination',[AbsenceController::class, 'changerElimination']);
 
 

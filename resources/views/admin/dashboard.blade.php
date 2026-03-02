@@ -16,7 +16,7 @@
         <p>Bienvenue {{ auth()->user()->name }}</p>
     </div>
 
-    <!-- Cards -->
+    
     <div class="admin-cards">
 
         <div class="admin-card">
@@ -115,6 +115,23 @@
         Gérer
     </a>
 </div>
+
+<div class="admin-card">
+    <h3>Utilisateurs</h3>
+    <p>Gestion des utilisateurs (enseignants, étudiants, admins)</p>
+    <a href="{{ route('users.csv.page') }}" class="admin-btn btn-blue">
+        Gérer
+    </a>
+</div>
+
+<div class="admin-card">
+    <h3>Groupes – Matières</h3>
+    <p>Gestion des relations entre groupes et matières</p>
+    <a href="{{ route('groupematiere.csv.page') }}" class="admin-btn btn-blue">
+        Gérer
+    </a>
+</div>
+
 
 
 

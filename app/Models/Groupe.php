@@ -12,18 +12,13 @@ class Groupe extends Model
     protected $table = 'groupes';
     protected $primaryKey = 'code_groupe';
 
+    public $incrementing = false;      // ✅ MANQUANT - clé non auto-increment
+    protected $keyType = 'string'; 
+
     protected $fillable = [
         'nom_groupe'
     ];
-    public function etudiants()
-{
-    return $this->belongsToMany(
-        User::class,
-        'inscrit',       
-        'code_groupe',   
-        'code_etudiant'  
-    )->where('role', 'etudiant');
-}
+   
 
 
     public function seances()

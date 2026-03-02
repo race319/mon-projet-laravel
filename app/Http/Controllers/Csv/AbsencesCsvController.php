@@ -6,90 +6,146 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Absence;
 
+
 class AbsencesCsvController extends Controller
 {
-    /**
-     * Télécharger le CSV des absences
-     */
-    public function download()
-    {
-        $absences = Absence::all();
-        $filename = 'absences.csv';
 
-        $handle = fopen($filename, 'w+');
+public function download()
+{
+    $absences = \DB::table('absence')->get();
 
-        // En-tête CSV
+    $filename = 'absences.csv';
+    $handle = fopen($filename, 'w+');
+
+    // En-têtes du fichier CSV
+    fputcsv($handle, [
+        'code_etudiant',
+        'code_groupe',
+        'code_matiere',
+        'code_enseignant',
+        'date_absence',
+        'seance',
+        'statut',
+        'justifie',
+        'elimination',
+        'created_at',
+        'updated_at'
+    ], ';');
+
+    foreach ($absences as $a) {
+
+        // Conversion de l’élimination
+        $elimination = ($a->elimination == 1) ? 'elimine' : 'Non';
+
         fputcsv($handle, [
-            'id',
-            'code_etudiant',
-            'code_matiere',
-            'code_enseignant',
-            'seance',
-            'statut',
-            'justifie',
-            'elimination',
-            'date_absence',
-            'created_at',
-            'updated_at'
+            $a->code_etudiant,
+            $a->code_groupe,
+            $a->code_matiere,
+            $a->code_enseignant,
+            $a->date_absence,
+            $a->seance,
+            $a->statut,
+            $a->justifie,
+            $elimination, // <-- ici la correction
+            $a->created_at,
+            $a->updated_at
         ], ';');
-
-        // Données
-        foreach ($absences as $a) {
-            fputcsv($handle, [
-                $a->id,
-                $a->code_etudiant,
-                $a->code_matiere,
-                $a->code_enseignant,
-                $a->seance,
-                $a->statut,
-                $a->justifie,
-                $a->elimination,
-                $a->date_absence,
-                $a->created_at,
-                $a->updated_at
-            ], ';');
-        }
-
-        fclose($handle);
-
-        return response()->download($filename)->deleteFileAfterSend(true);
     }
 
-    /**
-     * Importer le CSV des absences
-     */
+    fclose($handle);
+
+    return response()->download($filename)->deleteFileAfterSend(true);
+}
+
     public function upload(Request $request)
     {
         $request->validate([
-            'csv_file' => 'required|mimes:csv,txt'
+            'csv_file' => 'required|mimes:csv,txt|max:102400'
         ]);
 
         $path = $request->file('csv_file')->getRealPath();
+
+        set_time_limit(0);
+        ini_set('memory_limit', '1024M');
+
         $file = fopen($path, 'r');
 
-        // Ignorer la première ligne (header)
-        fgetcsv($file, 1000, ';');
-
-        while (($row = fgetcsv($file, 1000, ';')) !== false) {
-            Absence::updateOrCreate(
-                ['id' => $row[0]],
-                [
-                    'code_etudiant'   => $row[1],
-                    'code_matiere'    => $row[2],
-                    'code_enseignant' => $row[3],
-                    'seance'          => $row[4],
-                    'statut'          => $row[5],
-                    'justifie'        => $row[6],
-                    'elimination'     => $row[7],
-                    'date_absence'    => $row[8],
-                    'created_at'      => $row[9],
-                    'updated_at'      => $row[10],
-                ]
-            );
+        if (!$file) {
+            throw new \Exception('Impossible d\'ouvrir le fichier.');
         }
 
-        fclose($file);
+        if (!stream_filter_append($file, 'convert.iconv.ISO-8859-15/UTF-8')) {
+            stream_filter_append($file, 'convert.iconv.WINDOWS-1252/UTF-8');
+        }
 
-        return back()->with('success', 'CSV Absences importé avec succès !');
+        try {
+            $header = fgetcsv($file, 0, ';');
+
+            if (!$header) {
+                fclose($file);
+                throw new \Exception('Le fichier est vide ou corrompu.');
+            }
+
+            $importedCount = 0;
+            $batch = [];
+            $csvLineNumber = 0;
+
+            \DB::disableQueryLog();
+
+            while (($row = fgetcsv($file, 0, ';')) !== false) {
+                $csvLineNumber++;
+
+                if (count($header) !== count($row)) {
+                    \Log::warning("Ligne $csvLineNumber ignorée: nombre de colonnes incorrect");
+                    continue;
+                }
+
+                $data = array_combine($header, $row);
+
+                $batch[] = [
+                    'code_etudiant'    => $data['code_etudiant'] ?? '',
+                    'code_groupe'      => $data['code_groupe'] ?? '',
+                    'code_matiere'     => $data['code_matiere'] ?? '',
+                    'code_enseignant'  => $data['code_enseignant'] ?? '',
+                    'seance'           => $data['seance'] ?? 1,
+                    'statut'           => $data['statut'] ?? 'Absent',
+                    'justifie'         => $data['justifie'] ?? false,
+                    'elimination'      => $data['elimination'] ?? false,
+                    'created_at'       => now(),
+                    'updated_at'       => now(),
+                ];
+
+                if (count($batch) >= 1000) {
+                    \DB::table('absence')->insert($batch);
+                    $importedCount += count($batch);
+                    $batch = [];
+
+                    if ($importedCount % 10000 === 0) {
+                        gc_collect_cycles();
+                    }
+                }
+            }
+
+            if (!empty($batch)) {
+                \DB::table('absence')->insert($batch);
+                $importedCount += count($batch);
+            }
+
+            fclose($file);
+
+            return back()->with('success', "Import terminé : $importedCount absences importées.");
+
+        } catch (\Exception $e) {
+            if (isset($file) && is_resource($file)) {
+                fclose($file);
+            }
+
+            \Log::error('Import CSV Absences échoué', [
+                'error' => $e->getMessage(),
+                'trace' => $e->getTraceAsString()
+            ]);
+
+            return back()->with('error', "Échec de l'import : " . $e->getMessage());
+        }
     }
 }

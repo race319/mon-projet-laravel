@@ -12,11 +12,10 @@ class VoeuxEnseignement extends Model
 
     protected $fillable = ['code_enseignant', 'code_jour', 'code_seance'];
 
-  public function enseignant()
-{
-    return $this->belongsTo(Enseignant::class, 'code_enseignant', 'user_id');
-    //                                          ↑ voeux table      ↑ enseignants table
-}
+ public function enseignant()
+    {
+        return $this->belongsTo(Enseignant::class, 'code_enseignant', 'code_enseignant');
+    }
 public function horaire()
     {
         return $this->belongsTo(Horaire::class, 'code_seance', 'id');

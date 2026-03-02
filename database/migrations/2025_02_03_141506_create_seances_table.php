@@ -12,7 +12,8 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('seances', function (Blueprint $table) {
+       if (!Schema::hasTable('seances')) {
+            Schema::create('seances', function (Blueprint $table) {
             $table->id();
             $table->string('date_seance'); // date en format texte
             $table->string('code_jour');
@@ -32,6 +33,7 @@ return new class extends Migration
                   ->on('users')
                   ->onDelete('set null');
         });
+    }
     }
 
     /**

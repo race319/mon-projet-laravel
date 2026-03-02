@@ -48,17 +48,15 @@ class GroupeController extends Controller
      * )
      */
     public function getEtudiants($code_groupe)
-    {
-        $etudiants = Inscrit::where('code_groupe', $code_groupe)
-            ->with('etudiant') 
-            ->get();
+{
+    $etudiants = Inscrit::where('code_groupe', $code_groupe)->get();
 
-        if ($etudiants->isEmpty()) {
-            return response()->json(['message' => 'Aucun étudiant trouvé'], 404);
-        }
-
-        return response()->json($etudiants, 200);
+    if ($etudiants->isEmpty()) {
+        return response()->json(['message' => 'Aucun étudiant trouvé'], 404);
     }
+
+    return response()->json($etudiants, 200);
+}
     /**
      * @OA\Get(
      *     path="/api/groupe/{code_groupe}/matieres",
@@ -90,20 +88,20 @@ class GroupeController extends Controller
      * )
      */
 
-    public function getMatieres($code_groupe)
-    {
-        $enseignements = Enseignement::where('code_groupe', $code_groupe)
-            ->with('matiere') 
-            ->get();
+   public function getMatieres($code_groupe, Request $request)
+{
+    $codeEnseignant = $request->query('code_enseignant');
 
-        if ($enseignements->isEmpty()) {
-            return response()->json(['message' => 'Aucune matière trouvée pour ce groupe'], 404);
-        }
+    $matieres = Enseignement::where('code_groupe', $code_groupe)
+        ->where('code_enseignant', $codeEnseignant) // ✅ juste enseignant
+        ->with('matiere')
+        ->get()
+        ->pluck('matiere')
+        ->filter()
+        ->unique('code_matiere')
+        ->values();
 
-        $matieres = $enseignements->map(function ($e) {
-            return $e->matiere;
-        });
+    return response()->json($matieres, 200);
+}
 
-        return response()->json($matieres, 200);
-    }
 }

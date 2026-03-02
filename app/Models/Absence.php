@@ -14,28 +14,27 @@ class Absence extends Model
 
     protected $fillable = [
         'code_etudiant',
+        'code_groupe',
         'code_matiere',
         'code_enseignant',
-        'date_absence',
         'seance',
+        'date_absence',
         'statut',
         'justifie',
         'elimination',
         
     ];
-    protected $appends = ['date_absence'];
+   protected $casts = [
+        'date_absence' => 'date', // ✅ Cast en objet Carbon
+    ];
     
-    public function getDateAbsenceAttribute()
-    {
-        return $this->created_at;
-    }
+    public function inscrit()
+{
+    return $this->belongsTo(Inscrit::class, 'code_etudiant', 'code_etudiant');
+}
 
     
-    public function etudiant()
-    {
-        return $this->belongsTo(User::class, 'code_etudiant');
-    }
-
+   
     public function enseignant()
     {
         return $this->belongsTo(User::class, 'code_enseignant');

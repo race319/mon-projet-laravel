@@ -11,7 +11,7 @@ class Enseignement extends Model
 
     protected $table = 'enseignement';
     protected $casts = [
-    'date_seance' => 'date',
+    'date_seance' => 'string',
 ];
 
 
@@ -19,7 +19,7 @@ class Enseignement extends Model
         'code_enseignant',
         'code_groupe',
         'code_matiere',
-        'nature_enseignement',
+        'code_typeseance',
         'date_seance',
     ];
     public function enseignant()
@@ -28,13 +28,13 @@ class Enseignement extends Model
     }
 
     public function groupe()
-    {
-        return $this->belongsTo(Groupe::class, 'code_groupe');
-    }
+{
+    return $this->belongsTo(Groupe::class, 'code_groupe', 'code_groupe');
+}
     public function matiere()
-    {
-        return $this->belongsTo(Matiere::class, 'code_matiere');
-    }
+{
+    return $this->belongsTo(Matiere::class, 'code_matiere', 'code_matiere');
+}
 
     /**
      * Relation vers les absences liées à cet enseignement

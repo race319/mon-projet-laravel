@@ -36,17 +36,18 @@ class VoeuxExamenController extends Controller
  * )
  */
     public function index()
-    {
-        $user = Auth::user();
-        $voeux = VoeuxExamen::with('creneau')
-            ->where('code_enseignant', $user->id)
-            ->get();
+{
+    $user = Auth::user();
 
-        return response()->json([
-            'success' => true,
-            'data' => $voeux
-        ]);
-    }
+    $voeux = VoeuxExamen::with('creneau')
+        ->where('code_enseignant', $user->code_enseignant) // ✅ code_enseignant au lieu de id
+        ->get();
+
+    return response()->json([
+        'success' => true,
+        'data'    => $voeux
+    ]);
+}
 
     /**
  * @OA\Post(
@@ -66,81 +67,75 @@ class VoeuxExamenController extends Controller
  * )
  */
     public function store(Request $request)
-    {
-        $request->validate([
-            'code_creneau' => 'required|integer|exists:creneau,code_creneau',
-        ]);
+{
+    $request->validate([
+        'code_creneau' => 'required|string|exists:creneau,code_creneau', // ✅ string au lieu de integer
+    ]);
 
-        $user = auth()->user();
-        $enseignant = $user->enseignant;
+    $user = auth()->user();
+    $enseignant = $user->enseignant;
 
-        if (!$enseignant) {
-            return response()->json([
-                'message' => 'Profil enseignant introuvable.'
-            ], 404);
-        }
+    if (!$enseignant) {
+        return response()->json([
+            'message' => 'Profil enseignant introuvable.'
+        ], 404);
+    }
 
-        $heuresParCreneau = 2; // Chaque créneau = 2 heures
-        $chargeTotale = $enseignant->charge_surveillance;
+    $heuresParCreneau = 2; // ✅ 
+    $chargeTotale = $enseignant->charge_surveillance;
 
-        
-        $heuresSelectionnees = VoeuxExamen::where('code_enseignant', $user->id)
-            ->count() * $heuresParCreneau;
+    $heuresSelectionnees = VoeuxExamen::where('code_enseignant', $user->code_enseignant) // ✅ code_enseignant au lieu de id
+        ->count() * $heuresParCreneau;
 
-        // 🔍 DEBUG
-        Log::info('Debug calcul heures surveillance:', [
-            'user_id' => $user->id,
-            'charge_totale' => $chargeTotale,
-            'heures_deja_selectionnees' => $heuresSelectionnees,
-            'heures_par_creneau' => $heuresParCreneau,
-            'total_apres_ajout' => $heuresSelectionnees + $heuresParCreneau,
-            'nombre_voeux_existants' => VoeuxExamen::where('code_enseignant', $user->id)->count(),
-        ]);
+    Log::info('Debug calcul heures surveillance:', [
+        'code_enseignant'          => $user->code_enseignant, // ✅
+        'charge_totale'            => $chargeTotale,
+        'heures_deja_selectionnees'=> $heuresSelectionnees,
+        'heures_par_creneau'       => $heuresParCreneau,
+        'total_apres_ajout'        => $heuresSelectionnees + $heuresParCreneau,
+        'nombre_voeux_existants'   => VoeuxExamen::where('code_enseignant', $user->code_enseignant)->count(), // ✅
+    ]);
 
-        
-        if (($heuresSelectionnees + $heuresParCreneau) > $chargeTotale) {
-            $reste = $chargeTotale - $heuresSelectionnees;
-            
-            return response()->json([
-                'message' => "Vous ne pouvez plus sélectionner ce créneau. Il vous reste $reste heure(s) à compléter.",
-                'debug' => [
-                    'charge_totale' => $chargeTotale,
-                    'heures_selectionnees' => $heuresSelectionnees,
-                    'heures_a_ajouter' => $heuresParCreneau,
-                    'reste' => $reste
-                ]
-            ], 400);
-        }
-
-       
-        $voeuExistant = VoeuxExamen::where('code_enseignant', $user->id)
-            ->where('code_creneau', $request->code_creneau)
-            ->first();
-
-        if ($voeuExistant) {
-            return response()->json([
-                'message' => 'Vous avez déjà sélectionné ce créneau.'
-            ], 400);
-        }
-
-        // Créer le vœu
-        $voeu = VoeuxExamen::create([
-            'code_enseignant' => $user->id,
-            'code_creneau' => $request->code_creneau,
-        ]);
-
-        // Recalculer après ajout
-        $heuresSelectionnees += $heuresParCreneau;
+    if (($heuresSelectionnees + $heuresParCreneau) > $chargeTotale) {
         $reste = $chargeTotale - $heuresSelectionnees;
 
         return response()->json([
-            'message' => $reste > 0
-                ? "Vœu ajouté avec succès. Il vous reste $reste heure(s) à sélectionner."
-                : "Vœu ajouté avec succès. Vous avez atteint votre charge de surveillance.",
-            'reste' => $reste,
-            'data' => $voeu
-        ], 201);
+            'message' => "Vous ne pouvez plus sélectionner ce créneau. Il vous reste $reste heure(s) à compléter.",
+            'debug'   => [
+                'charge_totale'        => $chargeTotale,
+                'heures_selectionnees' => $heuresSelectionnees,
+                'heures_a_ajouter'     => $heuresParCreneau,
+                'reste'                => $reste
+            ]
+        ], 400);
     }
+
+    $voeuExistant = VoeuxExamen::where('code_enseignant', $user->code_enseignant) // ✅
+        ->where('code_creneau', $request->code_creneau)
+        ->first();
+
+    if ($voeuExistant) {
+        return response()->json([
+            'message' => 'Vous avez déjà sélectionné ce créneau.'
+        ], 400);
+    }
+
+    $voeu = VoeuxExamen::create([
+        'code_enseignant' => $user->code_enseignant, // ✅
+        'code_creneau'    => $request->code_creneau,
+    ]);
+
+    $heuresSelectionnees += $heuresParCreneau;
+    $reste = $chargeTotale - $heuresSelectionnees;
+
+    return response()->json([
+        'message' => $reste > 0
+            ? "Vœu ajouté avec succès. Il vous reste $reste heure(s) à sélectionner."
+            : "Vœu ajouté avec succès. Vous avez atteint votre charge de surveillance.",
+        'reste' => $reste,
+        'voeu'  => $voeu // ✅ 'voeu' au lieu de 'data'
+    ], 201);
+}
 
     /**
  * @OA\Delete(
@@ -160,28 +155,27 @@ class VoeuxExamenController extends Controller
  */
 
     public function destroy($code_creneau)
-    {
-        $user = Auth::user();
+{
+    $user = Auth::user();
 
-        $voeu = VoeuxExamen::where('code_enseignant', $user->id)
-            ->where('code_creneau', $code_creneau)
-            ->first();
+    $voeu = VoeuxExamen::where('code_enseignant', $user->code_enseignant) // ✅ code_enseignant au lieu de id
+        ->where('code_creneau', $code_creneau)
+        ->first();
 
-        if (!$voeu) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Vœu introuvable'
-            ], 404);
-        }
-
-        $voeu->delete();
-
+    if (!$voeu) {
         return response()->json([
-            'success' => true,
-            'message' => 'Vœu supprimé avec succès'
-        ]);
+            'success' => false,
+            'message' => 'Vœu introuvable'
+        ], 404);
     }
-    
+
+    $voeu->delete();
+
+    return response()->json([
+        'success' => true,
+        'message' => 'Vœu supprimé avec succès'
+    ]);
+}
 
    /**
  * @OA\Post(
@@ -210,45 +204,52 @@ class VoeuxExamenController extends Controller
 
 
     public function bulkUpdate(Request $request)
-    {
-        $request->validate([
-            'voeux' => 'required|array',
-            'voeux.*.code_creneau' => 'required|integer|exists:creneau,code_creneau',
-        ]);
+{
+    $request->validate([
+        'voeux'                    => 'required|array',
+        'voeux.*.code_creneau'     => 'required|string|exists:creneau,code_creneau', // ✅ string au lieu de integer
+    ]);
 
-        $user = $request->user();
-        $heuresParCreneau = 2;
-        $chargeTotale = $user->charge_surveillance ?? 10;
+    $user = $request->user();
+    $enseignant = $user->enseignant;
 
-        $nouveauxVoeux = $request->voeux;
-        $heuresNouveaux = count($nouveauxVoeux) * $heuresParCreneau;
-
-        if ($heuresNouveaux > $chargeTotale) {
-            return response()->json([
-                'message' => "Le nombre de créneaux sélectionnés dépasse votre charge de surveillance ($chargeTotale heures)."
-            ], 400);
-        }
-
-        // Supprimer les anciens vœux
-        VoeuxExamen::where('code_enseignant', $user->id)->delete();
-
-        // Créer les nouveaux vœux
-        $voeuxCrees = [];
-        foreach ($nouveauxVoeux as $voeu) {
-            $voeuxCrees[] = VoeuxExamen::create([
-                'code_enseignant' => $user->id,
-                'code_creneau' => $voeu['code_creneau'],
-            ]);
-        }
-
-        $reste = max(0, $chargeTotale - $heuresNouveaux);
-
+    if (!$enseignant) {
         return response()->json([
-            'message' => 'Vœux mis à jour avec succès.',
-            'reste' => $reste,
-            'data' => $voeuxCrees
-        ], 200);
+            'message' => 'Profil enseignant introuvable.'
+        ], 404);
     }
+
+    $heuresParCreneau = 2; // ✅ 1.5 au lieu de 2
+    $chargeTotale     = $enseignant->charge_surveillance; // ✅ via enseignant au lieu de $user
+
+    $nouveauxVoeux  = $request->voeux;
+    $heuresNouveaux = count($nouveauxVoeux) * $heuresParCreneau;
+
+    if ($heuresNouveaux > $chargeTotale) {
+        return response()->json([
+            'message' => "Le nombre de créneaux sélectionnés dépasse votre charge de surveillance ($chargeTotale heures)."
+        ], 400);
+    }
+
+    // ✅ code_enseignant au lieu de id
+    VoeuxExamen::where('code_enseignant', $user->code_enseignant)->delete();
+
+    $voeuxCrees = [];
+    foreach ($nouveauxVoeux as $voeu) {
+        $voeuxCrees[] = VoeuxExamen::create([
+            'code_enseignant' => $user->code_enseignant, // ✅
+            'code_creneau'    => $voeu['code_creneau'],
+        ]);
+    }
+
+    $reste = max(0, $chargeTotale - $heuresNouveaux);
+
+    return response()->json([
+        'message' => 'Vœux mis à jour avec succès.',
+        'reste'   => $reste,
+        'voeux'   => $voeuxCrees // ✅ 'voeux' au lieu de 'data'
+    ], 200);
+}
 
 
     /**
@@ -264,21 +265,22 @@ class VoeuxExamenController extends Controller
 
 
     public function getChargeSurveillance(Request $request)
-    {
-        $user = $request->user();
+{
+    $user = $request->user();
 
-        $enseignant = Enseignant::where('user_id', $user->id)->first();
+    $enseignant = $user->enseignant; // ✅ via relation au lieu de where('user_id')
 
-        if (!$enseignant) {
-            return response()->json([
-                'message' => 'Enseignant non trouvé'
-            ], 404);
-        }
-
+    if (!$enseignant) {
         return response()->json([
-            'charge_surveillance' => $enseignant->charge_surveillance
-        ], 200);
+            'message' => 'Enseignant non trouvé'
+        ], 404);
     }
+
+    return response()->json([
+        'success'             => true,
+        'charge_surveillance' => $enseignant->charge_surveillance
+    ], 200);
+}
 
    /**
  * @OA\Get(

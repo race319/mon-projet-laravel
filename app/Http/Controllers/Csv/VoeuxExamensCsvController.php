@@ -8,7 +8,6 @@ use App\Models\VoeuxExamen;
 
 class VoeuxExamensCsvController extends Controller
 {
-    
     public function download()
     {
         $voeux = VoeuxExamen::all();
@@ -16,7 +15,6 @@ class VoeuxExamensCsvController extends Controller
 
         $handle = fopen($filename, 'w+');
 
-        
         fputcsv($handle, [
             'id',
             'code_enseignant',
@@ -25,7 +23,6 @@ class VoeuxExamensCsvController extends Controller
             'updated_at'
         ], ';');
 
-        
         foreach ($voeux as $v) {
             fputcsv($handle, [
                 $v->id,
@@ -44,29 +41,87 @@ class VoeuxExamensCsvController extends Controller
     public function upload(Request $request)
     {
         $request->validate([
-            'csv_file' => 'required|mimes:csv,txt'
+            'csv_file' => 'required|mimes:csv,txt|max:102400' // 100MB max
         ]);
 
         $path = $request->file('csv_file')->getRealPath();
+        set_time_limit(0);
+        ini_set('memory_limit', '1024M');
+
         $file = fopen($path, 'r');
 
-        
-        fgetcsv($file, 1000, ';');
-
-        while (($row = fgetcsv($file, 1000, ';')) !== false) {
-            VoeuxExamen::updateOrCreate(
-                ['id' => $row[0]],
-                [
-                    'code_enseignant' => $row[1],
-                    'code_creneau' => $row[2],
-                    'created_at' => $row[3],
-                    'updated_at' => $row[4],
-                ]
-            );
+        if (!$file) {
+            throw new \Exception('Impossible d\'ouvrir le fichier.');
         }
 
-        fclose($file);
+        if (!stream_filter_append($file, 'convert.iconv.ISO-8859-15/UTF-8')) {
+            stream_filter_append($file, 'convert.iconv.WINDOWS-1252/UTF-8');
+        }
 
-        return back()->with('success', 'CSV Vœux Examens importé avec succès !');
+        try {
+            $header = fgetcsv($file, 0, ';');
+
+            if (!$header) {
+                fclose($file);
+                throw new \Exception('Le fichier est vide ou corrompu.');
+            }
+
+            $importedCount = 0;
+            $batch = [];
+            $csvLineNumber = 0;
+
+            \DB::disableQueryLog();
+
+            while (($row = fgetcsv($file, 0, ';')) !== false) {
+                $csvLineNumber++;
+
+                if (count($header) !== count($row)) {
+                    \Log::warning("Ligne $csvLineNumber ignorée: nombre de colonnes incorrect");
+                    continue;
+                }
+
+                $data = array_combine($header, $row);
+
+                $batch[] = [
+                    'code_enseignant' => $data['code_enseignant'] ?? '',
+                    'code_creneau'    => $data['code_creneau'] ?? '',
+                    'created_at'      => now(),
+                    'updated_at'      => now(),
+                ];
+
+                // ✅ Insert par lots de 1000
+                if (count($batch) >= 1000) {
+                    \DB::table('voeux_examens')->insert($batch);
+                    $importedCount += count($batch);
+                    $batch = [];
+
+                    if ($importedCount % 10000 === 0) {
+                        gc_collect_cycles();
+                    }
+                }
+            }
+
+            // ✅ Dernier lot
+            if (!empty($batch)) {
+                \DB::table('voeux_examens')->insert($batch);
+                $importedCount += count($batch);
+            }
+
+            fclose($file);
+
+            return back()->with('success', "Import terminé : $importedCount vœux examens importés.");
+
+        } catch (\Exception $e) {
+            if (isset($file) && is_resource($file)) {
+                fclose($file);
+            }
+
+            \Log::error('Import CSV voeux_examens échoué', [
+                'error' => $e->getMessage(),
+                'trace' => $e->getTraceAsString()
+            ]);
+
+            return back()->with('error', "Échec de l'import : " . $e->getMessage());
+        }
     }
 }

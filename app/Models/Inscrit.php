@@ -10,19 +10,13 @@ class Inscrit extends Model
     use HasFactory;
 
     protected $table = 'inscrit'; 
-    protected $primaryKey = 'id';
+   
 
     protected $fillable = [
         'code_etudiant',
-        'code_groupe',
-        'date_inscription',
+        'code_groupe'
     ];
 
-   
-    public function etudiant()
-    {
-        return $this->belongsTo(User::class, 'code_etudiant', 'id');
-    }
 
     public function groupe()
     {

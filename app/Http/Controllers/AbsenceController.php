@@ -142,31 +142,31 @@ class AbsenceController extends Controller
      *     )
      * )
      */
-    public function marquerAbsence(Request $request)
+  public function marquerAbsence(Request $request)
 {
     $request->validate([
-        'code_etudiant' => 'required|exists:users,id',
-        'code_matiere' => 'required|exists:matieres,code_matiere',
-        'code_enseignant' => 'required|exists:users,id',
-        'seance' => 'required|integer',
-        'statut' => 'required|in:Absent,Present',
-        'justifie' => 'boolean',
-        'date_absence' => 'required|date', 
+        'code_etudiant'   => 'required|string',
+        'code_groupe'     => 'required|string|exists:groupes,code_groupe',
+        'code_matiere'    => 'required|string|exists:matieres,code_matiere',
+        'code_enseignant' => 'required|string',
+        'seance'          => 'required|integer',
+        'date_absence'    => 'required|date', // ✅ Ajouté
+        'statut'          => 'required|in:Absent,Present',
+        'justifie'        => 'boolean',
     ]);
 
-    
     $absence = Absence::updateOrCreate(
         [
-            
             'code_etudiant' => $request->code_etudiant,
-            'code_matiere' => $request->code_matiere,
-            'seance' => $request->seance,
-            'date_absence' => $request->date_absence, 
+            'code_groupe'   => $request->code_groupe,
+            'code_matiere'  => $request->code_matiere,
+            'seance'        => $request->seance,
+            'date_absence'  => $request->date_absence, // ✅ Ajouté dans les conditions
         ],
         [
             'code_enseignant' => $request->code_enseignant,
-            'statut' => $request->statut,
-            'justifie' => $request->justifie ?? 0,
+            'statut'          => $request->statut,
+            'justifie'        => $request->justifie ?? false,
         ]
     );
 
@@ -174,7 +174,7 @@ class AbsenceController extends Controller
         'success' => true,
         'message' => 'Absence enregistrée avec succès',
         'absence' => $absence
-    ], 200); 
+    ], 200);
 }
 
 /**
@@ -224,34 +224,45 @@ public function updateAbsence(Request $request, $id)
     }
 
     $request->validate([
-        'statut' => 'in:Absent,Present',
-        'justifie' => 'boolean'
+        'statut'       => 'in:Absent,Present',
+        'justifie'     => 'boolean',
+        'date_absence' => 'date', // ✅ Ajouté (optionnel)
     ]);
 
     $absence->update([
-        'statut' => $request->statut ?? $absence->statut,
-        'justifie' => $request->justifie ?? $absence->justifie,
+        'statut'       => $request->statut       ?? $absence->statut,
+        'justifie'     => $request->justifie     ?? $absence->justifie,
+        'date_absence' => $request->date_absence ?? $absence->date_absence, // ✅ Ajouté
     ]);
 
     return response()->json([
         'message' => 'Absence mise à jour avec succès',
-        'absence' => $absence
+        'absence' => $absence->fresh() // ✅ Retourne les données à jour depuis la BDD
     ], 200);
 }
-public function nombreAbsencesEtudiant($codeEtudiant, $codeMatiere)
-{
-    $nombreAbsences = Absence::nombreAbsences($codeEtudiant, $codeMatiere);
-    $estElimine = Absence::estElimine($codeEtudiant, $codeMatiere);
 
-    $etudiant = User::find($codeEtudiant);
+public function nombreAbsencesEtudiant($codeEtudiant, $codeMatiere, $codeGroupe)
+{
+    $nombreAbsences = Absence::where('code_etudiant', $codeEtudiant)
+        ->where('code_matiere', $codeMatiere)
+        ->where('code_groupe', $codeGroupe)
+        ->where('statut', 'Absent')
+        ->count();
+
+    $estElimine = Absence::where('code_etudiant', $codeEtudiant)
+        ->where('code_matiere', $codeMatiere)
+        ->where('code_groupe', $codeGroupe)
+        ->where('elimination', 1)
+        ->exists();
+
     $matiere = Matiere::find($codeMatiere);
 
     return response()->json([
         'success' => true,
         'etudiant' => [
             'code' => $codeEtudiant,
-            'nom' => $etudiant->name ?? 'N/A',
         ],
+        'groupe' => $codeGroupe,
         'matiere' => [
             'code' => $codeMatiere,
             'nom' => $matiere->nom_matiere ?? 'N/A',
@@ -259,33 +270,29 @@ public function nombreAbsencesEtudiant($codeEtudiant, $codeMatiere)
         'nombre_absences' => $nombreAbsences,
         'est_elimine' => $estElimine,
         'statut_elimination' => $estElimine ? 'Éliminé' : 'Non éliminé'
-    ], 200);
+    ]);
 }
 
 
 public function changerElimination(Request $request)
 {
-    \Log::info('Données reçues:', $request->all());
-
     $request->validate([
         'code_etudiant' => 'required',
         'code_matiere' => 'required',
-        'elimination' => 'required|in:0,1', 
+        'code_groupe' => 'required',
+        'elimination' => 'required|in:0,1',
     ]);
 
-    Absence::changerElimination(
-        $request->code_etudiant, 
-        $request->code_matiere,
-        $request->elimination
-    );
-
-    $message = $request->elimination == 1 
-        ? 'Étudiant marqué comme éliminé' 
-        : 'Élimination annulée';
+    Absence::where('code_etudiant', $request->code_etudiant)
+        ->where('code_matiere', $request->code_matiere)
+        ->where('code_groupe', $request->code_groupe)
+        ->update(['elimination' => $request->elimination]);
 
     return response()->json([
         'success' => true,
-        'message' => $message
+        'message' => $request->elimination == 1
+            ? 'Étudiant marqué comme éliminé'
+            : 'Élimination annulée'
     ]);
 }
 

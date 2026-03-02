@@ -9,7 +9,11 @@ class Matiere extends Model {
 
     protected $table = 'matieres';
     protected $primaryKey = 'code_matiere';
+    public $incrementing = false;      
+    protected $keyType = 'string'; 
+    
     protected $fillable = [
+        'code_matiere',
         'nom_matiere',
         
     ];

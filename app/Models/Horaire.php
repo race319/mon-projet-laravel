@@ -7,6 +7,16 @@ use Illuminate\Database\Eloquent\Model;
 
 class Horaire extends Model
 {
-     protected $fillable = ['jour', 'creneau'];
-}
+    use HasFactory;
+    protected $table = 'horaires';
 
+    protected $fillable = [
+        'jour',
+        'creneau'
+    ];
+
+    public function voeux()
+    {
+        return $this->hasMany(VoeuxEnseignement::class, 'code_seance', 'id');
+    }
+}

@@ -14,6 +14,8 @@ use App\Http\Controllers\Csv\HoraireCsvController;
 use App\Http\Controllers\Csv\InscriptionCsvController;
 use App\Http\Controllers\Csv\MatiereCsvController;
 use App\Http\Controllers\Csv\SalleCsvController;
+use App\Http\Controllers\Csv\UsersCsvController;
+use App\Http\Controllers\Csv\GroupeMatiereCsvController;
 use Illuminate\Support\Facades\Auth;
 
 
@@ -92,6 +94,14 @@ Route::get('/creneaux/csv', function () {
     return view('admin.creneaux_csv');
 })->name('creneaux.csv.page');
 
+Route::get('/admin/users', function () {
+    return view('admin.users_csv');
+})->name('users.csv.page');
+
+Route::get('/groupe-matiere/csv', function () {
+        return view('admin.groupematiere_csv');
+    })->name('groupematiere.csv.page');
+
 
 Route::middleware(['auth', 'admin'])->group(function () {
     Route::get('/seances/csv/download', [SeanceCsvController::class, 'download'])->name('seances.csv.download');
@@ -144,7 +154,7 @@ Route::get('/horaires/csv/download',
     [HoraireCsvController::class, 'download']
 )->name('horaires.csv.download');
 
-// Upload CSV
+
 Route::post('/horaires/csv/upload',
     [HoraireCsvController::class, 'upload']
 )->name('horaires.csv.upload');
@@ -181,6 +191,23 @@ Route::get('/creneaux/csv/download',
 Route::post('/creneaux/csv/upload',
     [CreneauCsvController::class, 'upload']
 )->name('creneaux.csv.upload');
+
+Route::get('/admin/users/csv/download', [UsersCsvController::class, 'download'])
+    ->name('users.csv.download');
+
+
+Route::post('/admin/users/csv/upload', [UsersCsvController::class, 'upload'])
+    ->name('users.csv.upload');
+
+    Route::get(
+        '/groupe-matiere/csv/download',
+        [GroupeMatiereCsvController::class, 'download']
+    )->name('groupematiere.csv.download');
+
+    Route::post(
+        '/groupe-matiere/csv/upload',
+        [GroupeMatiereCsvController::class, 'upload']
+    )->name('groupematiere.csv.upload');
 
 
 
