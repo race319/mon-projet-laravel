@@ -17,7 +17,7 @@ public function download()
     $filename = 'absences.csv';
     $handle = fopen($filename, 'w+');
 
-    // En-têtes du fichier CSV
+    
     fputcsv($handle, [
         'code_etudiant',
         'code_groupe',

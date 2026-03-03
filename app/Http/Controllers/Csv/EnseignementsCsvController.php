@@ -53,18 +53,26 @@ class EnseignementsCsvController extends Controller
     set_time_limit(0);
     ini_set('memory_limit', '1024M');
 
+    // ✅ NOUVEAU : Convertir encodage
+    $content  = file_get_contents($path);
+    $encoding = mb_detect_encoding($content, ['UTF-8', 'ISO-8859-1', 'Windows-1252'], true);
+    if ($encoding !== 'UTF-8') {
+        $content = mb_convert_encoding($content, 'UTF-8', $encoding);
+        file_put_contents($path, $content);
+    }
+
+    // ✅ NOUVEAU : Détecter délimiteur
+    $firstLine = substr($content, 0, strpos($content, "\n"));
+    $delimiter = (substr_count($firstLine, ';') >= substr_count($firstLine, ',')) ? ';' : ',';
+
     $file = fopen($path, 'r');
 
     if (!$file) {
         throw new \Exception("Impossible d'ouvrir le fichier.");
     }
 
-    if (!stream_filter_append($file, 'convert.iconv.ISO-8859-15/UTF-8')) {
-        stream_filter_append($file, 'convert.iconv.WINDOWS-1252/UTF-8');
-    }
-
     try {
-        $header = fgetcsv($file, 0, ';');
+        $header = fgetcsv($file, 0, $delimiter); // ✅ délimiteur dynamique
 
         if (!$header) {
             fclose($file);
@@ -75,12 +83,12 @@ class EnseignementsCsvController extends Controller
         $normalize = function(string $value): string {
             $value = trim($value);
             $value = mb_strtolower($value, 'UTF-8');
-            $value = preg_replace('/\s+/', ' ', $value);         // ✅ Espaces multiples → 1
+            $value = preg_replace('/\s+/', ' ', $value);
             $value = str_replace(
                 ['à','â','ä','é','è','ê','ë','î','ï','ô','ö','ù','û','ü','ç'],
                 ['a','a','a','e','e','e','e','i','i','o','o','u','u','u','c'],
                 $value
-            );                                                    // ✅ Accents
+            );
             return $value;
         };
 
@@ -111,7 +119,7 @@ class EnseignementsCsvController extends Controller
 
         \DB::disableQueryLog();
 
-        while (($row = fgetcsv($file, 0, ';')) !== false) {
+        while (($row = fgetcsv($file, 0, $delimiter)) !== false) { // ✅ délimiteur dynamique
             $csvLineNumber++;
 
             if (count($header) !== count($row)) {
@@ -128,12 +136,10 @@ class EnseignementsCsvController extends Controller
             $codeMatiere    = $data['code_matiere']    ?? '';
             $codeTypeSeance = $data['code_typeseance'] ?? '';
 
-            // ✅ Normaliser les codes CSV
             $codeGroupeNorm     = $normalize($codeGroupe);
             $codeEnseignantNorm = $normalize($codeEnseignant);
             $codeMatiereNorm    = $normalize($codeMatiere);
 
-            // ✅ Validation
             if (!isset($validGroupes[$codeGroupeNorm])) {
                 $errors[] = "Ligne $csvLineNumber: groupe '$codeGroupe' inexistant";
                 $skippedCount++;
@@ -152,15 +158,14 @@ class EnseignementsCsvController extends Controller
                 continue;
             }
 
-            // ✅ Récupérer le VRAI code BDD
             $vraiCodeGroupe     = $validGroupes[$codeGroupeNorm];
             $vraiCodeEnseignant = $validEnseignants[$codeEnseignantNorm];
             $vraiCodeMatiere    = $validMatieres[$codeMatiereNorm];
 
             $batch[] = [
-                'code_enseignant' => $vraiCodeEnseignant, // ✅ Vrai code BDD
-                'code_groupe'     => $vraiCodeGroupe,     // ✅ Vrai code BDD
-                'code_matiere'    => $vraiCodeMatiere,    // ✅ Vrai code BDD
+                'code_enseignant' => $vraiCodeEnseignant,
+                'code_groupe'     => $vraiCodeGroupe,
+                'code_matiere'    => $vraiCodeMatiere,
                 'code_typeseance' => $codeTypeSeance,
                 'date_seance'     => $data['date_seance'] ?? null,
                 'created_at'      => now(),
@@ -207,4 +212,4 @@ class EnseignementsCsvController extends Controller
         return back()->with('error', "Échec de l'import : " . $e->getMessage());
     }
 }
-}  
+}

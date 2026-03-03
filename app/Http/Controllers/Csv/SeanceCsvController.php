@@ -60,100 +60,108 @@ class SeanceCsvController extends Controller
 public function upload(Request $request)
 {
     $request->validate([
-        'csv_file' => 'required|mimes:csv,txt|max:102400' // 100MB max
+        'csv_file' => 'required|mimes:csv,txt|max:102400'
     ]);
-     $path = $request->file('csv_file')->getRealPath();
-    set_time_limit(0); // Pas de limite de temps
-    ini_set('memory_limit', '1024M'); // 1GB
-            $file = fopen($path, 'r');
-        
-        if (!$file) {
-            throw new \Exception('Impossible d\'ouvrir le fichier.');
-        }
-    $path = $request->file('csv_file')->getRealPath();
-      if (!stream_filter_append($file, 'convert.iconv.ISO-8859-15/UTF-8')) {
-        // Essayer d'autres encodages courants
-        stream_filter_append($file, 'convert.iconv.WINDOWS-1252/UTF-8');
-    }
-    try {
 
-        
-        $header = fgetcsv($file, 0, ';');
-        
+    $path = $request->file('csv_file')->getRealPath();
+    set_time_limit(0);
+    ini_set('memory_limit', '1024M');
+
+    // ✅ Convertir fichier en UTF-8
+    $content  = file_get_contents($path);
+    $encoding = mb_detect_encoding($content, ['UTF-8', 'ISO-8859-1', 'Windows-1252'], true);
+
+    if ($encoding !== 'UTF-8') {
+        $content = mb_convert_encoding($content, 'UTF-8', $encoding);
+        file_put_contents($path, $content);
+    }
+
+    $file = fopen($path, 'r');
+
+    if (!$file) {
+        throw new \Exception('Impossible d\'ouvrir le fichier.');
+    }
+
+   
+    $firstLine = fgets($file);
+    rewind($file);
+    $delimiter = (substr_count($firstLine, ';') >= substr_count($firstLine, ',')) ? ';' : ',';
+
+    try {
+        $header = fgetcsv($file, 0, $delimiter);
+
         if (!$header) {
             fclose($file);
             throw new \Exception('Le fichier est vide ou corrompu.');
         }
-        
+
+        $header = array_map('trim', $header);
+
         $importedCount = 0;
-        $batch = [];
+        $batch         = [];
         $csvLineNumber = 0;
-        
-        // Désactiver les logs SQL pour la performance
+
         \DB::disableQueryLog();
-        
-        while (($row = fgetcsv($file, 0, ';')) !== false) {
+
+        while (($row = fgetcsv($file, 0, $delimiter)) !== false) {
             $csvLineNumber++;
-            
+
             if (count($header) !== count($row)) {
                 \Log::warning("Ligne $csvLineNumber ignorée: nombre de colonnes incorrect");
                 continue;
             }
-            
+
+            $row  = array_map('trim', $row);
             $data = array_combine($header, $row);
-            
+
             $batch[] = [
-                'code_salle'        => $data['code_salle'] ?? '',
-                'code_jour'         => $data['code_jour'] ?? '',
-                'numero_seance'     => $data['numero_seance'] ?? '',
-                'date_seance'       => $data['date_seance'] ?? '',
-                'code_enseignant'   => $data['code_enseignant'] ?? '',
-                'code_matiere'      => $data['code_matiere'] ?? null,
-                'code_typeseance'   => $data['code_typeseance'] ?? 'CM', 
-                'code_groupe'       => $data['code_groupe'] ?? '',
-                'code_effectue'     => $data['code_effectue'] ?? '1',
+                'code_salle'        => $data['code_salle']        ?? '',
+                'code_jour'         => $data['code_jour']         ?? '',
+                'numero_seance'     => $data['numero_seance']     ?? '',
+                'date_seance'       => $data['date_seance']       ?? '',
+                'code_enseignant'   => $data['code_enseignant']   ?? '',
+                'code_matiere'      => $data['code_matiere']      ?? null,
+                'code_typeseance'   => $data['code_typeseance']   ?? 'CM',
+                'code_groupe'       => $data['code_groupe']       ?? '',
+                'code_effectue'     => 'P',
                 'code_surveillance' => $data['code_surveillance'] ?? null,
-                'locked_at'         => $data['locked_at'] ?? null,
+                'locked_at'         => $data['locked_at']         ?? null,
                 'created_at'        => now(),
                 'updated_at'        => now(),
             ];
-            
-            // Insert par lots de 1000
+
             if (count($batch) >= 1000) {
-                \DB::table('seances')->insert($batch);
+                \DB::table('seances')->insert($batch); // ✅ insert normal
                 $importedCount += count($batch);
                 $batch = [];
-                
-                // Libérer la mémoire périodiquement
+
                 if ($importedCount % 10000 === 0) {
                     gc_collect_cycles();
                 }
             }
         }
-        
-        // Dernier lot
+
         if (!empty($batch)) {
-            \DB::table('seances')->insert($batch);
+            \DB::table('seances')->insert($batch); // ✅ insert normal
             $importedCount += count($batch);
         }
-        
+
         fclose($file);
-        
+
         return back()->with('success', "Import terminé : $importedCount séances importées.");
-        
+
     } catch (\Exception $e) {
-        // Fermeture sécurisée
         if (isset($file) && is_resource($file)) {
             fclose($file);
         }
-        
-        \Log::error('Import CSV échoué', [
+
+        \Log::error('Import CSV Séances échoué', [
             'error' => $e->getMessage(),
             'trace' => $e->getTraceAsString()
         ]);
-        
+
         return back()->with('error', "Échec de l'import : " . $e->getMessage());
     }
 }
+
 }
-   
