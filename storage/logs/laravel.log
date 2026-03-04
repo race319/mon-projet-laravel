@@ -1,0 +1,119 @@
+[2026-03-04 09:52:10] local.INFO: ========== DEBUT getGroupes ==========  
+[2026-03-04 09:52:10] local.INFO: 📅 Date reçue : 04/03/2026  
+[2026-03-04 09:52:10] local.INFO: 👤 Code enseignant : Abbes Malika  
+[2026-03-04 09:52:10] local.INFO: 🌐 URL complète : http://localhost:8000/api/enseignant/Abbes%20Malika/groupes?date=04%2F03%2F2026  
+[2026-03-04 09:52:10] local.INFO: 📦 Tous les paramètres : {"date":"04\/03\/2026"}  
+[2026-03-04 09:52:10] local.INFO: 🔍 Recherche avec :  
+[2026-03-04 09:52:10] local.INFO:   - code_enseignant = Abbes Malika  
+[2026-03-04 09:52:10] local.INFO:   - date_seance (string) = 04/03/2026  
+[2026-03-04 09:52:10] local.INFO: 📦 Nombre de groupes trouvés : 3  
+[2026-03-04 09:52:10] local.INFO: ✅ Groupes : [11783,16133,19207]  
+[2026-03-04 09:52:10] local.INFO: 📝 Détails premier groupe : {"id":11783,"code_enseignant":"Abbes Malika","code_groupe":"LE11 TD  5","code_matiere":"PRINCIPES DE GESTION","code_typeseance":"TD","date_seance":"04\/03\/2026","created_at":"2026-03-03T09:54:54.000000Z","updated_at":"2026-03-03T09:54:54.000000Z","groupe":{"code_groupe":"LE11 TD  5","nom_groupe":"LE11 CR 2 TD 2","created_at":"2026-02-18T08:11:48.000000Z","updated_at":"2026-02-18T08:11:48.000000Z"}}  
+[2026-03-04 09:52:10] local.INFO: ========== FIN getGroupes ==========
+  
+[2026-03-04 09:52:19] local.INFO: ========== DEBUT getGroupes ==========  
+[2026-03-04 09:52:19] local.INFO: 📅 Date reçue : 04/03/2026  
+[2026-03-04 09:52:19] local.INFO: 👤 Code enseignant : Abbes Malika  
+[2026-03-04 09:52:19] local.INFO: 🌐 URL complète : http://localhost:8000/api/enseignant/Abbes%20Malika/groupes?date=04%2F03%2F2026  
+[2026-03-04 09:52:19] local.INFO: 📦 Tous les paramètres : {"date":"04\/03\/2026"}  
+[2026-03-04 09:52:19] local.INFO: 🔍 Recherche avec :  
+[2026-03-04 09:52:19] local.INFO:   - code_enseignant = Abbes Malika  
+[2026-03-04 09:52:19] local.INFO:   - date_seance (string) = 04/03/2026  
+[2026-03-04 09:52:19] local.INFO: 📦 Nombre de groupes trouvés : 3  
+[2026-03-04 09:52:19] local.INFO: ✅ Groupes : [11783,16133,19207]  
+[2026-03-04 09:52:19] local.INFO: 📝 Détails premier groupe : {"id":11783,"code_enseignant":"Abbes Malika","code_groupe":"LE11 TD  5","code_matiere":"PRINCIPES DE GESTION","code_typeseance":"TD","date_seance":"04\/03\/2026","created_at":"2026-03-03T09:54:54.000000Z","updated_at":"2026-03-03T09:54:54.000000Z","groupe":{"code_groupe":"LE11 TD  5","nom_groupe":"LE11 CR 2 TD 2","created_at":"2026-02-18T08:11:48.000000Z","updated_at":"2026-02-18T08:11:48.000000Z"}}  
+[2026-03-04 09:52:19] local.INFO: ========== FIN getGroupes ==========
+  
+[2026-03-04 09:55:50] local.INFO: ========== DEBUT getGroupes ==========  
+[2026-03-04 09:55:50] local.INFO: 📅 Date reçue : 04/03/2026  
+[2026-03-04 09:55:50] local.INFO: 👤 Code enseignant : Abbes Malika  
+[2026-03-04 09:55:50] local.INFO: 🌐 URL complète : http://localhost:8000/api/enseignant/Abbes%20Malika/groupes?date=04%2F03%2F2026  
+[2026-03-04 09:55:50] local.INFO: 📦 Tous les paramètres : {"date":"04\/03\/2026"}  
+[2026-03-04 09:55:50] local.INFO: 🔍 Recherche avec :  
+[2026-03-04 09:55:50] local.INFO:   - code_enseignant = Abbes Malika  
+[2026-03-04 09:55:50] local.INFO:   - date_seance (string) = 04/03/2026  
+[2026-03-04 09:55:50] local.INFO: 📦 Nombre de groupes trouvés : 3  
+[2026-03-04 09:55:50] local.INFO: ✅ Groupes : [11783,16133,19207]  
+[2026-03-04 09:55:50] local.INFO: 📝 Détails premier groupe : {"id":11783,"code_enseignant":"Abbes Malika","code_groupe":"LE11 TD  5","code_matiere":"PRINCIPES DE GESTION","code_typeseance":"TD","date_seance":"04\/03\/2026","created_at":"2026-03-03T09:54:54.000000Z","updated_at":"2026-03-03T09:54:54.000000Z","groupe":{"code_groupe":"LE11 TD  5","nom_groupe":"LE11 CR 2 TD 2","created_at":"2026-02-18T08:11:48.000000Z","updated_at":"2026-02-18T08:11:48.000000Z"}}  
+[2026-03-04 09:55:50] local.INFO: ========== FIN getGroupes ==========
+  
+[2026-03-04 09:56:01] local.INFO: ========== DEBUT getGroupes ==========  
+[2026-03-04 09:56:01] local.INFO: 📅 Date reçue : 06/03/2026  
+[2026-03-04 09:56:01] local.INFO: 👤 Code enseignant : Abbes Malika  
+[2026-03-04 09:56:01] local.INFO: 🌐 URL complète : http://localhost:8000/api/enseignant/Abbes%20Malika/groupes?date=06%2F03%2F2026  
+[2026-03-04 09:56:01] local.INFO: 📦 Tous les paramètres : {"date":"06\/03\/2026"}  
+[2026-03-04 09:56:01] local.INFO: 🔍 Recherche avec :  
+[2026-03-04 09:56:01] local.INFO:   - code_enseignant = Abbes Malika  
+[2026-03-04 09:56:01] local.INFO:   - date_seance (string) = 06/03/2026  
+[2026-03-04 09:56:01] local.INFO: 📦 Nombre de groupes trouvés : 6  
+[2026-03-04 09:56:01] local.INFO: ✅ Groupes : [3139,11785,11787,16127,19203,24919]  
+[2026-03-04 09:56:01] local.INFO: 📝 Détails premier groupe : {"id":3139,"code_enseignant":"Abbes Malika","code_groupe":"LG13 TD  6","code_matiere":"Fondamentaux de la GRH","code_typeseance":"TD","date_seance":"06\/03\/2026","created_at":"2026-03-03T09:54:53.000000Z","updated_at":"2026-03-03T09:54:53.000000Z","groupe":{"code_groupe":"LG13 TD  6","nom_groupe":"LG13 CR 2 TD 3","created_at":"2026-02-18T08:11:48.000000Z","updated_at":"2026-02-18T08:11:48.000000Z"}}  
+[2026-03-04 09:56:01] local.INFO: ========== FIN getGroupes ==========
+  
+[2026-03-04 09:56:12] local.INFO: ========== DEBUT getGroupes ==========  
+[2026-03-04 09:56:12] local.INFO: 📅 Date reçue : 04/03/2026  
+[2026-03-04 09:56:12] local.INFO: 👤 Code enseignant : Abbes Malika  
+[2026-03-04 09:56:12] local.INFO: 🌐 URL complète : http://localhost:8000/api/enseignant/Abbes%20Malika/groupes?date=04%2F03%2F2026  
+[2026-03-04 09:56:12] local.INFO: 📦 Tous les paramètres : {"date":"04\/03\/2026"}  
+[2026-03-04 09:56:12] local.INFO: 🔍 Recherche avec :  
+[2026-03-04 09:56:12] local.INFO:   - code_enseignant = Abbes Malika  
+[2026-03-04 09:56:12] local.INFO:   - date_seance (string) = 04/03/2026  
+[2026-03-04 09:56:12] local.INFO: 📦 Nombre de groupes trouvés : 3  
+[2026-03-04 09:56:12] local.INFO: ✅ Groupes : [11783,16133,19207]  
+[2026-03-04 09:56:12] local.INFO: 📝 Détails premier groupe : {"id":11783,"code_enseignant":"Abbes Malika","code_groupe":"LE11 TD  5","code_matiere":"PRINCIPES DE GESTION","code_typeseance":"TD","date_seance":"04\/03\/2026","created_at":"2026-03-03T09:54:54.000000Z","updated_at":"2026-03-03T09:54:54.000000Z","groupe":{"code_groupe":"LE11 TD  5","nom_groupe":"LE11 CR 2 TD 2","created_at":"2026-02-18T08:11:48.000000Z","updated_at":"2026-02-18T08:11:48.000000Z"}}  
+[2026-03-04 09:56:12] local.INFO: ========== FIN getGroupes ==========
+  
+[2026-03-04 10:01:56] local.INFO: ========== DEBUT getGroupes ==========  
+[2026-03-04 10:01:56] local.INFO: 📅 Date reçue : 05/03/2026  
+[2026-03-04 10:01:56] local.INFO: 👤 Code enseignant : Abbes Malika  
+[2026-03-04 10:01:56] local.INFO: 🌐 URL complète : http://localhost:8000/api/enseignant/Abbes%20Malika/groupes?date=05%2F03%2F2026  
+[2026-03-04 10:01:56] local.INFO: 📦 Tous les paramètres : {"date":"05\/03\/2026"}  
+[2026-03-04 10:01:56] local.INFO: 🔍 Recherche avec :  
+[2026-03-04 10:01:56] local.INFO:   - code_enseignant = Abbes Malika  
+[2026-03-04 10:01:56] local.INFO:   - date_seance (string) = 05/03/2026  
+[2026-03-04 10:01:56] local.INFO: 📦 Nombre de groupes trouvés : 2  
+[2026-03-04 10:01:56] local.INFO: ✅ Groupes : [11781,19202]  
+[2026-03-04 10:01:56] local.INFO: 📝 Détails premier groupe : {"id":11781,"code_enseignant":"Abbes Malika","code_groupe":"LE11 TD  5","code_matiere":"PRINCIPES DE GESTION","code_typeseance":"TD","date_seance":"05\/03\/2026","created_at":"2026-03-03T09:54:54.000000Z","updated_at":"2026-03-03T09:54:54.000000Z","groupe":{"code_groupe":"LE11 TD  5","nom_groupe":"LE11 CR 2 TD 2","created_at":"2026-02-18T08:11:48.000000Z","updated_at":"2026-02-18T08:11:48.000000Z"}}  
+[2026-03-04 10:01:56] local.INFO: ========== FIN getGroupes ==========
+  
+[2026-03-04 10:02:06] local.INFO: ========== DEBUT getGroupes ==========  
+[2026-03-04 10:02:06] local.INFO: 📅 Date reçue : 06/03/2026  
+[2026-03-04 10:02:06] local.INFO: 👤 Code enseignant : Abbes Malika  
+[2026-03-04 10:02:06] local.INFO: 🌐 URL complète : http://localhost:8000/api/enseignant/Abbes%20Malika/groupes?date=06%2F03%2F2026  
+[2026-03-04 10:02:06] local.INFO: 📦 Tous les paramètres : {"date":"06\/03\/2026"}  
+[2026-03-04 10:02:06] local.INFO: 🔍 Recherche avec :  
+[2026-03-04 10:02:06] local.INFO:   - code_enseignant = Abbes Malika  
+[2026-03-04 10:02:06] local.INFO:   - date_seance (string) = 06/03/2026  
+[2026-03-04 10:02:06] local.INFO: 📦 Nombre de groupes trouvés : 6  
+[2026-03-04 10:02:06] local.INFO: ✅ Groupes : [3139,11785,11787,16127,19203,24919]  
+[2026-03-04 10:02:06] local.INFO: 📝 Détails premier groupe : {"id":3139,"code_enseignant":"Abbes Malika","code_groupe":"LG13 TD  6","code_matiere":"Fondamentaux de la GRH","code_typeseance":"TD","date_seance":"06\/03\/2026","created_at":"2026-03-03T09:54:53.000000Z","updated_at":"2026-03-03T09:54:53.000000Z","groupe":{"code_groupe":"LG13 TD  6","nom_groupe":"LG13 CR 2 TD 3","created_at":"2026-02-18T08:11:48.000000Z","updated_at":"2026-02-18T08:11:48.000000Z"}}  
+[2026-03-04 10:02:06] local.INFO: ========== FIN getGroupes ==========
+  
+[2026-03-04 10:04:03] local.INFO: ========== DEBUT getGroupes ==========  
+[2026-03-04 10:04:03] local.INFO: 📅 Date reçue : 07/03/2026  
+[2026-03-04 10:04:03] local.INFO: 👤 Code enseignant : Abbes Malika  
+[2026-03-04 10:04:03] local.INFO: 🌐 URL complète : http://localhost:8000/api/enseignant/Abbes%20Malika/groupes?date=07%2F03%2F2026  
+[2026-03-04 10:04:03] local.INFO: 📦 Tous les paramètres : {"date":"07\/03\/2026"}  
+[2026-03-04 10:04:03] local.INFO: 🔍 Recherche avec :  
+[2026-03-04 10:04:03] local.INFO:   - code_enseignant = Abbes Malika  
+[2026-03-04 10:04:03] local.INFO:   - date_seance (string) = 07/03/2026  
+[2026-03-04 10:04:03] local.INFO: 📦 Nombre de groupes trouvés : 4  
+[2026-03-04 10:04:03] local.INFO: ✅ Groupes : [3140,11775,16128,16129]  
+[2026-03-04 10:04:03] local.INFO: 📝 Détails premier groupe : {"id":3140,"code_enseignant":"Abbes Malika","code_groupe":"LG13 TD  6","code_matiere":"Fondamentaux de la GRH","code_typeseance":"TD","date_seance":"07\/03\/2026","created_at":"2026-03-03T09:54:53.000000Z","updated_at":"2026-03-03T09:54:53.000000Z","groupe":{"code_groupe":"LG13 TD  6","nom_groupe":"LG13 CR 2 TD 3","created_at":"2026-02-18T08:11:48.000000Z","updated_at":"2026-02-18T08:11:48.000000Z"}}  
+[2026-03-04 10:04:03] local.INFO: ========== FIN getGroupes ==========
+  
+[2026-03-04 10:16:31] local.INFO: Délimiteur détecté: ','  
+[2026-03-04 10:16:31] local.INFO: Colonnes détectées: date_seance | code_jour | numero_seance | code_salle | code_matiere | code_typeseance | code_enseignant | code_groupe | code_effectue | code_surveillance  
+[2026-03-04 10:16:31] local.INFO: Nombre de colonnes: 10  
+[2026-03-04 10:16:31] local.INFO: Première ligne de données: {"date_seance":"07\/02\/2026","code_jour":"6","numero_seance":"1","code_salle":"16","code_matiere":"Logistique et gestion de supply chain","code_typeseance":"CR","code_enseignant":"Abbes Kais","code_groupe":"PO51","code_effectue":"P","code_surveillance":"1"}  
+[2026-03-04 10:18:48] local.INFO: Encodage détecté: UTF-8  
+[2026-03-04 10:18:48] local.INFO: Délimiteur détecté: ','  
+[2026-03-04 10:18:48] local.INFO: Colonnes détectées: date_seance | code_jour | numero_seance | code_salle | code_matiere | code_typeseance | code_enseignant | code_groupe | code_effectue | code_surveillance  
+[2026-03-04 10:18:48] local.INFO: Nombre de colonnes: 10  
+[2026-03-04 10:18:48] local.INFO: Première ligne de données: {"date_seance":"07\/02\/2026","code_jour":"6","numero_seance":"1","code_salle":"16","code_matiere":"Logistique et gestion de supply chain","code_typeseance":"CR","code_enseignant":"Abbes Kais","code_groupe":"PO51","code_effectue":"P","code_surveillance":"1"}  
+[2026-03-04 10:21:51] local.INFO: Colonnes: date_seance | code_jour | numero_seance | code_salle | code_matiere | code_typeseance | code_enseignant | code_groupe | code_effectue | code_surveillance  
+[2026-03-04 10:21:51] local.INFO: Première ligne: {"date_seance":"07\/02\/2026","code_jour":"6","numero_seance":"1","code_salle":"16","code_matiere":"Logistique et gestion de supply chain","code_typeseance":"CR","code_enseignant":"Abbes Kais","code_groupe":"PO51","code_effectue":"P","code_surveillance":"1"}  
+[2026-03-04 10:33:52] local.INFO: Délimiteur détecté: ','  
+[2026-03-04 10:33:52] local.INFO: Colonnes détectées: date_seance | code_jour | numero_seance | code_salle | code_matiere | code_typeseance | code_enseignant | code_groupe | code_effectue | code_surveillance  
+[2026-03-04 10:33:52] local.INFO: Nombre de colonnes: 10  
+[2026-03-04 10:33:52] local.INFO: Première ligne de données: {"date_seance":"07\/02\/2026","code_jour":"6","numero_seance":"1","code_salle":"16","code_matiere":"Logistique et gestion de supply chain","code_typeseance":"CR","code_enseignant":"Abbes Kais","code_groupe":"PO51","code_effectue":"P","code_surveillance":"1"}  
