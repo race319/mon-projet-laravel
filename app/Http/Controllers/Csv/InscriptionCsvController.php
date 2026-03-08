@@ -11,7 +11,7 @@ class InscriptionCsvController extends Controller
     public function download()
     {
         $inscriptions = \DB::table('inscrit')->get();
-        $filename = 'inscriptions.csv';
+        $filename = storage_path('app/inscriptions.csv');
 
         $handle = fopen($filename, 'w+');
 

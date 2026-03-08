@@ -11,7 +11,7 @@ class CreneauCsvController extends Controller
     public function download()
     {
         $creneaux = Creneau::all();
-        $filename = 'creneaux.csv';
+        $filename = storage_path('app/creneaux.csv');
 
         $handle = fopen($filename, 'w+');
 

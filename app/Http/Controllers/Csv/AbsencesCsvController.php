@@ -14,7 +14,7 @@ public function download()
 {
     $absences = \DB::table('absence')->get();
 
-    $filename = 'absences.csv';
+    $filename = storage_path('app/absences.csv');
     $handle = fopen($filename, 'w+');
 
     

@@ -11,7 +11,7 @@ class EnseignementsCsvController extends Controller
     public function download()
     {
         $enseignements = \DB::table('enseignement')->get();
-        $filename = 'enseignements.csv';
+       $filename = storage_path('app/enseignements.csv');
 
         $handle = fopen($filename, 'w+');
 

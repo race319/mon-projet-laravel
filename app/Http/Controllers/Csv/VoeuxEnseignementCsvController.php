@@ -11,7 +11,7 @@ class VoeuxEnseignementCsvController extends Controller
     public function download()
     {
         $voeux = VoeuxEnseignement::all();
-        $filename = 'voeux_enseignement.csv';
+        $filename = storage_path('app/voeux_enseignement.csv');
 
         $handle = fopen($filename, 'w+');
 

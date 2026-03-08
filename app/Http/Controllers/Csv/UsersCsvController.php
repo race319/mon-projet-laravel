@@ -11,7 +11,7 @@ class UsersCsvController extends Controller
     public function download()
     {
         $users = User::all();
-        $filename = 'users.csv';
+       $filename = storage_path('app/users.csv');
 
         $handle = fopen($filename, 'w+');
 

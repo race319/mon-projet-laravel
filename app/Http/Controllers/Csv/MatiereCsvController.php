@@ -11,7 +11,7 @@ class MatiereCsvController extends Controller
     public function download()
     {
         $matieres = Matiere::all();
-        $filename = 'matieres.csv';
+       $filename = storage_path('app/matieres.csv');
 
         $handle = fopen($filename, 'w+');
 

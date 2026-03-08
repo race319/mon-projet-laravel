@@ -11,7 +11,7 @@ class GroupeMatiereCsvController extends Controller
     public function download()
     {
         $relations = DB::table('groupe_matiere')->get();
-        $filename = 'groupe_matiere.csv';
+        $filename = storage_path('app/groupe_matiere.csv');
 
         $handle = fopen($filename, 'w+');
 

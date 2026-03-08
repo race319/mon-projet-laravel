@@ -14,7 +14,7 @@ class SalleCsvController extends Controller
     public function download()
     {
         $salles = Salle::all();
-        $filename = storage_path('app/public/salles.csv'); // chemin sûr
+        $filename = storage_path('app/salles.csv'); 
 
         $handle = fopen($filename, 'w+');
 

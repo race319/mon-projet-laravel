@@ -11,7 +11,7 @@ class SeanceCsvController extends Controller
     public function download()
     {
         $seances = Seance::all();
-        $filename = 'seances.csv';
+        $filename = storage_path('app/seances.csv');
 
         $handle = fopen($filename, 'w+');
 

@@ -11,7 +11,7 @@ class GroupesCsvController extends Controller
     public function download()
     {
         $groupes = Groupe::all();
-        $filename = 'groupes.csv';
+       $filename = storage_path('app/groupes.csv');
 
         $handle = fopen($filename, 'w+');
 
