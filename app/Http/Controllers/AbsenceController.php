@@ -226,18 +226,18 @@ public function updateAbsence(Request $request, $id)
     $request->validate([
         'statut'       => 'in:Absent,Present',
         'justifie'     => 'boolean',
-        'date_absence' => 'date', // ✅ Ajouté (optionnel)
+        'date_absence' => 'date', 
     ]);
 
     $absence->update([
         'statut'       => $request->statut       ?? $absence->statut,
         'justifie'     => $request->justifie     ?? $absence->justifie,
-        'date_absence' => $request->date_absence ?? $absence->date_absence, // ✅ Ajouté
+        'date_absence' => $request->date_absence ?? $absence->date_absence, 
     ]);
 
     return response()->json([
         'message' => 'Absence mise à jour avec succès',
-        'absence' => $absence->fresh() // ✅ Retourne les données à jour depuis la BDD
+        'absence' => $absence->fresh() 
     ], 200);
 }
 

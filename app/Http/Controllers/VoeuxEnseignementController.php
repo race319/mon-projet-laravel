@@ -194,7 +194,7 @@ public function bulkUpdate(Request $request)
         return response()->json(['message' => 'Profil enseignant introuvable.'], 404);
     }
 
-    $heuresParSeance = 1.5; // ✅ cohérent avec store et index
+    $heuresParSeance = 1.5; 
     $chargeTotale    = $enseignant->charge_enseignement;
     $nouveauxVoeux   = $request->voeux;
 
@@ -206,7 +206,7 @@ public function bulkUpdate(Request $request)
         ], 400);
     }
 
-    // ✅ code_enseignant au lieu de id
+    
     VoeuxEnseignement::where('code_enseignant', $user->code_enseignant)->delete();
 
     $voeuxCrees = [];
@@ -229,7 +229,7 @@ public function bulkUpdate(Request $request)
 
 public function indexx()
 {
-    $creneaux = Horaire::all(); // ✅ Horaire au lieu de Creneau (table horaires)
+    $creneaux = Horaire::all();
     return response()->json([
         'success' => true,
         'data'    => $creneaux

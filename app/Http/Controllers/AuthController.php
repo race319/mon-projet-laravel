@@ -200,11 +200,11 @@ class AuthController extends Controller
         'password' => 'required'
     ]);
 
-    // FORCER le guard web
+    
     if (Auth::guard('web')->attempt($credentials)) {
         $request->session()->regenerate();
 
-        // Vérifier le rôle admin
+       
         if (auth()->user()->role !== 'admin') {
             Auth::guard('web')->logout();
             return back()->withErrors([

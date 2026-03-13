@@ -12,7 +12,7 @@ class Groupe extends Model
     protected $table = 'groupes';
     protected $primaryKey = 'code_groupe';
 
-    public $incrementing = false;      // ✅ MANQUANT - clé non auto-increment
+    public $incrementing = false;      
     protected $keyType = 'string'; 
 
     protected $fillable = [

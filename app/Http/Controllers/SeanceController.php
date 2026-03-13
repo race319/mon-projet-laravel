@@ -138,7 +138,7 @@ class SeanceController extends Controller
 
     $seance = Seance::findOrFail($id);
 
-    // ✅ BON fichier de config
+    
     $duration = config('seances.absence_modification_seconds');
 
     if ($seance->locked_at) {
@@ -149,11 +149,11 @@ class SeanceController extends Controller
         if ($secondsPassed >= $duration) {
             return response()->json([
                 'success' => false,
-                'message' => 'Modification impossible : délai dépassé'
+                'message' => ' impossible : délai dépasse'
             ], 403);
         }
     } else {
-        // 🔒 première modification → verrou
+        
         $seance->locked_at = now();
     }
 
@@ -163,7 +163,7 @@ class SeanceController extends Controller
 
     return response()->json([
         'success' => true,
-        'message' => 'État modifié avec succès',
+        'message' => ' succès',
         'data' => $seance
     ], 200);
 }

@@ -25,7 +25,7 @@ class Absence extends Model
         
     ];
    protected $casts = [
-        'date_absence' => 'date', // ✅ Cast en objet Carbon
+        'date_absence' => 'date', 
     ];
     
     public function inscrit()

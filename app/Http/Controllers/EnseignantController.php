@@ -59,10 +59,10 @@ class EnseignantController extends Controller
  public function getGroupes(Request $request, $code_enseignant)
 {
     \Log::info("========== DEBUT getGroupes ==========");
-    \Log::info("📅 Date reçue : " . ($request->query('date') ?? 'NULL'));
-    \Log::info("👤 Code enseignant : " . $code_enseignant);
-    \Log::info("🌐 URL complète : " . $request->fullUrl());
-    \Log::info("📦 Tous les paramètres : " . json_encode($request->all()));
+    \Log::info(" Date reçue : " . ($request->query('date') ?? 'NULL'));
+    \Log::info(" Code enseignant : " . $code_enseignant);
+    \Log::info(" URL complète : " . $request->fullUrl());
+    \Log::info(" Tous les paramètres : " . json_encode($request->all()));
 
     $date = $request->query('date');
 
@@ -76,7 +76,7 @@ class EnseignantController extends Controller
     \Log::info("  - date_seance (string) = " . $date);
 
     $groupes = Enseignement::where('code_enseignant', $code_enseignant)
-        ->where('date_seance', $date) // ✅ FIX ICI
+        ->where('date_seance', $date) 
         ->with('groupe')
         ->get();
 

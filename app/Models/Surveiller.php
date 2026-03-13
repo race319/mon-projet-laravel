@@ -31,19 +31,19 @@ class Surveiller extends Model
     return $this->belongsTo(Creneau::class, 'code_creneau', 'code_creneau');
 }
 
-    // Accessor : Libellé de la qualité
+    
     public function getQualiteLabelAttribute()
     {
         return $this->qualite === 'S' ? 'Surveillant' : 'Commission';
     }
 
-    // Scope : Récupérer uniquement les surveillants (pas les commissions)
+   
     public function scopeSurveillants($query)
     {
         return $query->where('qualite', 'S');
     }
 
-    // Scope : Récupérer uniquement les commissions
+    
     public function scopeCommissions($query)
     {
         return $query->where('qualite', 'C');

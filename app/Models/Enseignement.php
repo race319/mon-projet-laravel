@@ -36,9 +36,8 @@ class Enseignement extends Model
     return $this->belongsTo(Matiere::class, 'code_matiere', 'code_matiere');
 }
 
-    /**
-     * Relation vers les absences liées à cet enseignement
-     */
+
+     
     public function absences()
     {
         return $this->hasMany(Absence::class, 'code_matiere', 'code_matiere');
